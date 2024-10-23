@@ -17,6 +17,8 @@ import kotlinx.coroutines.Job
 import kotlinx.coroutines.cancel
 import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
+import org.koin.core.component.inject
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
@@ -24,14 +26,17 @@ import kotlin.time.Duration.Companion.seconds
 /**
  * Service class for Android timer functionality.
  */
-class TimerService : Service() {
+class TimerService : Service(), KoinComponent {
 
     // TODO: Remove in favor of TimerManager
     private val timerScope = CoroutineScope(Dispatchers.Default + Job()) // Coroutine scope for the timer
 
     // TODO: Refactor to use TimerManager
     private var remainingTime = 10.minutes
-    private val notificationHelper = NotificationHelper(this)
+
+    // TODO: Use this
+    private val timerManager by inject<TimerManager>()
+    private val notificationHelper by inject<NotificationHelper>()
 
     override fun onCreate() {
         super.onCreate()
