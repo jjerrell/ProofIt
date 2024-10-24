@@ -45,6 +45,8 @@ kotlin {
             implementation(projects.feature.timer)
             implementation(projects.feature.notification)
 
+            implementation(libs.koin.compose.core)
+
             implementation(compose.runtime)
             implementation(compose.foundation)
             implementation(compose.material)

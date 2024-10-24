@@ -28,14 +28,10 @@ import kotlin.time.Duration.Companion.seconds
  */
 class TimerService : Service(), KoinComponent {
 
-    // TODO: Remove in favor of TimerManager
     private val timerScope = CoroutineScope(Dispatchers.Default + Job()) // Coroutine scope for the timer
 
-    // TODO: Refactor to use TimerManager
     private var remainingTime = 10.minutes
 
-    // TODO: Use this
-    private val timerManager by inject<TimerManager>()
     private val notificationHelper by inject<NotificationHelper>()
 
     override fun onCreate() {
@@ -102,7 +98,7 @@ class TimerService : Service(), KoinComponent {
     }
 
     companion object {
-        const val NOTIFICATION_ID = 1 // TODO: Refactor to use TimerManager's UUID hashcode
+        const val NOTIFICATION_ID = 1
 
         fun startService(context: Context) {
             val intent = Intent(context, TimerService::class.java)
