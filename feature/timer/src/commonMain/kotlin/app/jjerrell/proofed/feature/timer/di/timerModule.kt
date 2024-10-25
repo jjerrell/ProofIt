@@ -7,6 +7,6 @@ import kotlin.uuid.Uuid
 
 val timerModule = module {
     factory { (id: Uuid, duration: Duration) ->
-        TimerManager(id, duration)
+        TimerManager(id, duration, get())
     }
 }

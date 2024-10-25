@@ -25,7 +25,7 @@ actual class NotificationHelper(private val context: Context) {
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .build()
 
-        showNotification(notification)
+        showNotification(notification, timerId.hashCode())
     }
 
     fun showNotification(
@@ -42,6 +42,11 @@ actual class NotificationHelper(private val context: Context) {
         title: String,
         message: String
     ) {
+    }
+
+    actual fun clearNotification(timerId: Uuid) {
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.cancel(timerId.hashCode())
     }
 
     fun createNotificationChannel(

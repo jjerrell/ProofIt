@@ -20,4 +20,8 @@ actual class NotificationHelper {
         message: String
     ) {
     }
+
+    actual fun clearNotification(timerId: Uuid) {
+
+    }
 }

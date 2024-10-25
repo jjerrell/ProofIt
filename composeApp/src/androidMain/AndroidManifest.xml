@@ -26,7 +26,7 @@
         </activity>
 
         <service
-            android:name=".feature.timer.TimerService"
+            android:name=".feature.timer.TimerNotificationService"
             android:foregroundServiceType="systemExempted"
             android:exported="false" />
     </application>

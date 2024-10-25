@@ -11,11 +11,16 @@ import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import org.koin.core.component.KoinComponent
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.Uuid
 
-class TimerManager(id: Uuid, duration: Duration) {
+class TimerManager(
+    id: Uuid,
+    duration: Duration,
+    private val timerService: TimerService
+) : KoinComponent {
     private val dataStateFlow = MutableStateFlow(TimerData(id, duration))
 
     val timerStateFlow: StateFlow<TimerState> = dataStateFlow.map { it.state }.stateIn(
@@ -34,7 +39,11 @@ class TimerManager(id: Uuid, duration: Duration) {
     fun start() {
         if (timerJob?.isActive == true) return
 
-        dataStateFlow.update { it.copy(state = TimerState.Running) }
+        dataStateFlow.update {
+            it.copy(state = TimerState.Running).also { updatedState ->
+                timerService.startTimer(updatedState)
+            }
+        }
 
         timerJob = CoroutineScope(Dispatchers.Default).launch {
             runTimer()
@@ -51,7 +60,9 @@ class TimerManager(id: Uuid, duration: Duration) {
 
     fun stop() {
         dataStateFlow.update {
-            it.copy(remaining = it.duration, state = TimerState.Idle)
+            it.copy(remaining = it.duration, state = TimerState.Idle).also {
+                timerService.stopTimer(it)
+            }
         }
         timerJob?.cancel()
         timerJob = null
@@ -67,10 +78,14 @@ class TimerManager(id: Uuid, duration: Duration) {
                 currentState.copy(
                     remaining = newTime,
                     state = if (newTime <= Duration.ZERO) TimerState.Idle else TimerState.Running
-                )
+                ).also {
+                    timerService.updateTimer(it)
+                }
             }
 
             delay(1000) // Delay after state update
         }
+
+        stop()
     }
 }
