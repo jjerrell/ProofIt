@@ -24,7 +24,7 @@ internal constructor(
     duration: Duration,
     isAlarm: Boolean,
     private val timerService: TimerService,
-    private val alarmService: TimerAlarmService
+    private val alarmService: TimerAlarmService,
 ) : KoinComponent {
     private val dataStateFlow =
         MutableStateFlow(TimerData(id = id, duration = duration, isAlarm = isAlarm))
@@ -71,11 +71,15 @@ internal constructor(
         }
     }
 
-    fun stop() {
+    fun stop(isForced: Boolean = false) {
         dataStateFlow.update {
             it.copy(remaining = it.duration, state = TimerState.Idle).also { updatedTimer ->
-                if (!updatedTimer.isAlarm) {
-                    timerService.stopTimer(updatedTimer)
+                if (isForced) {
+                    if (updatedTimer.isAlarm) {
+                        alarmService.stopTimer(updatedTimer)
+                    } else {
+                        timerService.stopTimer(updatedTimer)
+                    }
                 }
             }
         }

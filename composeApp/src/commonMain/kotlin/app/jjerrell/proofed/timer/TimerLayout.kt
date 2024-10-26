@@ -41,13 +41,13 @@ fun TimerLayout(modifier: Modifier = Modifier) {
         Text(text = "Timer State: ${timerState.value}")
         Button(onClick = { timer.start() }) { Text(text = "Start") }
         Button(onClick = { timer.pause() }) { Text(text = "Pause") }
-        Button(onClick = { timer.stop() }) { Text(text = "Stop") }
+        Button(onClick = { timer.stop(isForced = true) }) { Text(text = "Stop") }
         Divider(modifier = Modifier.padding(vertical = 8.dp))
         Text(text = "Alarm Timer Layout")
         Text(text = "Timer: ${remainingAlarmTime.value}")
         Text(text = "Timer State: ${timerAlarmState.value}")
         Button(onClick = { alarmTimer.start() }) { Text(text = "Start") }
         Button(onClick = { alarmTimer.pause() }) { Text(text = "Pause") }
-        Button(onClick = { alarmTimer.stop() }) { Text(text = "Stop") }
+        Button(onClick = { alarmTimer.stop(isForced = true) }) { Text(text = "Stop") }
     }
 }

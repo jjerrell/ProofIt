@@ -57,6 +57,7 @@ internal actual class TimerService : Service(), KoinComponent, ITimerService {
         when (intent?.action) {
             "START_SERVICE" -> {
                 val timerData = intent.extras?.toTimerServiceData() ?: return START_NOT_STICKY
+
                 val serviceTimerId = timerData.timerId.hashCode()
                 val notificationRemaining = timerData.timestampMillis.milliseconds
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
@@ -123,7 +124,7 @@ internal actual class TimerService : Service(), KoinComponent, ITimerService {
         private fun stopService(context: Context) {
             val timerIntent = Intent(context, TimerService::class.java)
             timerIntent.action = "STOP_SERVICE" // Define the stop action
-            context.startService(timerIntent) // Send the intent to stop the service
+            context.stopService(timerIntent) // Send the intent to stop the service
         }
     }
 }
