@@ -10,17 +10,9 @@ import app.jjerrell.proofed.feature.notification.NotificationHelper
 import app.jjerrell.proofed.feature.timer.TimerData
 import app.jjerrell.proofed.feature.timer.util.toBundle
 import app.jjerrell.proofed.feature.timer.util.toTimerServiceData
-import kotlin.time.Duration.Companion.seconds
-import kotlin.time.DurationUnit
-import kotlin.time.toDuration
-import kotlin.uuid.Uuid
 import kotlinx.datetime.Clock
-import kotlinx.datetime.DateTimeUnit
-import kotlinx.datetime.Instant
-import kotlinx.datetime.until
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.time.Duration.Companion.milliseconds
 
 internal actual class TimerAlarmService : BroadcastReceiver(), KoinComponent, ITimerService {
     private val context: Context by inject<Context>()
@@ -30,18 +22,16 @@ internal actual class TimerAlarmService : BroadcastReceiver(), KoinComponent, IT
         val timerData = intent.extras?.toTimerServiceData() ?: return
 
         // Show the notification using NotificationHelper
-        notificationHelper.showNotification(
-            timerData.timerId,
-            timerData.title,
-            timerData.message
-        )
+        notificationHelper.showNotification(timerData.timerId, timerData.title, timerData.message)
     }
 
     actual override fun startTimer(timerData: TimerData) {
         startService(context, timerData)
     }
 
-    actual override fun updateTimer(timerData: TimerData) { /* No-op */ }
+    actual override fun updateTimer(timerData: TimerData) {
+        /* No-op */
+    }
 
     actual override fun stopTimer(timerData: TimerData) {
         stopService(context)
@@ -88,10 +78,11 @@ internal actual class TimerAlarmService : BroadcastReceiver(), KoinComponent, IT
             }
         }
 
-        private fun AlarmManager.canScheduleAlarm(): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-            canScheduleExactAlarms()
-        } else {
-            true
-        }
+        private fun AlarmManager.canScheduleAlarm(): Boolean =
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+                canScheduleExactAlarms()
+            } else {
+                true
+            }
     }
 }

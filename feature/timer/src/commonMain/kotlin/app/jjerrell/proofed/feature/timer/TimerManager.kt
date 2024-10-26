@@ -26,7 +26,8 @@ internal constructor(
     private val timerService: TimerService,
     private val alarmService: TimerAlarmService
 ) : KoinComponent {
-    private val dataStateFlow = MutableStateFlow(TimerData(id = id, duration = duration, isAlarm = isAlarm))
+    private val dataStateFlow =
+        MutableStateFlow(TimerData(id = id, duration = duration, isAlarm = isAlarm))
 
     val timerStateFlow: StateFlow<TimerState> =
         dataStateFlow

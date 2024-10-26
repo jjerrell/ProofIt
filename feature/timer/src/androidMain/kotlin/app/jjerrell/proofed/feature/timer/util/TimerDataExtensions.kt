@@ -14,9 +14,10 @@ fun TimerData.toBundle(): Bundle {
     }
 }
 
-fun Bundle.toTimerServiceData() = TimerServiceData(
-    timerId = getString("timerId")?.let { Uuid.parseHex(it) } ?: Uuid.random(),
-    title = getString("title") ?: "Timer Finished",
-    message = getString("message") ?: "Your timer has finished.",
-    timestampMillis = getLong("timestampMillis"),
-)
+fun Bundle.toTimerServiceData() =
+    TimerServiceData(
+        timerId = getString("timerId")?.let { Uuid.parseHex(it) } ?: Uuid.random(),
+        title = getString("title") ?: "Timer Finished",
+        message = getString("message") ?: "Your timer has finished.",
+        timestampMillis = getLong("timestampMillis"),
+    )
