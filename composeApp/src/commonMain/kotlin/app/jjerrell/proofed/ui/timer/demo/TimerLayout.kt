@@ -1,4 +1,4 @@
-package app.jjerrell.proofed.timer
+package app.jjerrell.proofed.ui.timer.demo
 
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.padding
