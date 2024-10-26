@@ -8,6 +8,8 @@ import android.content.Intent
 import android.os.Build
 import app.jjerrell.proofed.feature.notification.NotificationHelper
 import app.jjerrell.proofed.feature.timer.TimerData
+import app.jjerrell.proofed.feature.timer.util.toBundle
+import app.jjerrell.proofed.feature.timer.util.toTimerServiceData
 import kotlin.time.Duration.Companion.seconds
 import kotlin.time.DurationUnit
 import kotlin.time.toDuration
@@ -18,54 +20,56 @@ import kotlinx.datetime.Instant
 import kotlinx.datetime.until
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
+import kotlin.time.Duration.Companion.milliseconds
 
 internal actual class TimerAlarmService : BroadcastReceiver(), KoinComponent, ITimerService {
+    private val context: Context by inject<Context>()
     private val notificationHelper by inject<NotificationHelper>()
 
     override fun onReceive(context: Context, intent: Intent) {
-        // Extract the title and message from the intent (optional)
-        val title = intent.getStringExtra("title") ?: "Timer Finished"
-        val message = intent.getStringExtra("message") ?: "Your timer has finished."
-        val timerId = intent.getStringExtra("timerId")?.let { Uuid.parseHex(it) }
-        //        val triggerTime = intent.getLongExtra("triggerTime", -1)
-        //            .takeUnless { it < 0 }
-        //            ?.let {
-        //                Duration.
-        //            }
+        val timerData = intent.extras?.toTimerServiceData() ?: return
 
         // Show the notification using NotificationHelper
-        notificationHelper.showNotification(timerId ?: Uuid.random(), 0.seconds, title, message)
+        notificationHelper.showNotification(
+            timerData.timerId,
+            timerData.title,
+            timerData.message
+        )
     }
 
     actual override fun startTimer(timerData: TimerData) {
-        TODO("Not yet implemented")
+        startService(context, timerData)
     }
 
-    actual override fun updateTimer(timerData: TimerData) {
-        TODO("Not yet implemented")
-    }
+    actual override fun updateTimer(timerData: TimerData) { /* No-op */ }
 
     actual override fun stopTimer(timerData: TimerData) {
-        TODO("Not yet implemented")
+        stopService(context)
     }
 
     companion object {
         private fun startService(context: Context, data: TimerData) {
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val intent = Intent(context, TimerAlarmService::class.java)
-            val pendingIntent =
-                PendingIntent.getBroadcast(
-                    context,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
+            if (alarmManager.canScheduleAlarm()) {
+                val intent =
+                    Intent(context, TimerAlarmService::class.java).apply {
+                        action = "SCHEDULE_ALARM"
+                        putExtras(data.toBundle())
+                    }
+                val pendingIntent =
+                    PendingIntent.getBroadcast(
+                        context,
+                        0,
+                        intent,
+                        PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
+                    )
 
-            alarmManager.setExact(
-                AlarmManager.RTC_WAKEUP,
-                System.currentTimeMillis() + data.remaining.inWholeMilliseconds,
-                pendingIntent
-            )
+                alarmManager.setExact(
+                    AlarmManager.RTC_WAKEUP,
+                    Clock.System.now().plus(data.remaining).toEpochMilliseconds(),
+                    pendingIntent
+                )
+            }
         }
 
         private fun stopService(context: Context) {
@@ -84,55 +88,10 @@ internal actual class TimerAlarmService : BroadcastReceiver(), KoinComponent, IT
             }
         }
 
-        // TODO: Possibly remove
-        private fun scheduleTimerAlarm(
-            context: Context,
-            timerId: Uuid,
-            triggerTime: Instant,
-            title: String,
-            message: String
-        ) {
-            val duration =
-                Clock.System.now()
-                    .until(triggerTime, DateTimeUnit.SECOND)
-                    .toDuration(DurationUnit.SECONDS)
-
-            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            //            createNotificationChannel()
-
-            // Create an intent for the TimerAlarmReceiver
-            val intent =
-                Intent(context, TimerAlarmService::class.java).apply {
-                    action = "SCHEDULE_ALARM"
-                    putExtra("timerId", timerId.toHexString())
-                    putExtra("triggerTime", triggerTime.toEpochMilliseconds())
-                    putExtra("title", title)
-                    putExtra("message", message)
-                }
-
-            // Create a PendingIntent that will trigger the broadcast receiver
-            val pendingIntent =
-                PendingIntent.getBroadcast(
-                    context,
-                    0,
-                    intent,
-                    PendingIntent.FLAG_UPDATE_CURRENT or PendingIntent.FLAG_IMMUTABLE
-                )
-
-            if (
-                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
-                    alarmManager.canScheduleExactAlarms()
-                } else {
-                    true
-                }
-            ) {
-                // Schedule the alarm
-                alarmManager.setExact(
-                    AlarmManager.RTC_WAKEUP, // Use RTC_WAKEUP to wake the device if it is asleep
-                    triggerTime.toEpochMilliseconds(),
-                    pendingIntent
-                )
-            }
+        private fun AlarmManager.canScheduleAlarm(): Boolean = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.S) {
+            canScheduleExactAlarms()
+        } else {
+            true
         }
     }
 }

@@ -5,6 +5,8 @@ import kotlin.uuid.Uuid
 
 data class TimerData(
     val id: Uuid,
+    val title: String = "ProofIt!",
+    val description: String? = null,
     val duration: Duration,
     var remaining: Duration = duration,
     var state: TimerState = TimerState.Idle,
