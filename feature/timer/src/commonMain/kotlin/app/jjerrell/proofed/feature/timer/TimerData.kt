@@ -12,7 +12,9 @@ data class TimerData(
 )
 
 sealed interface TimerState {
-    data object Idle: TimerState
-    data object Running: TimerState
-    data object Paused: TimerState
+    data object Idle : TimerState
+
+    data object Running : TimerState
+
+    data object Paused : TimerState
 }

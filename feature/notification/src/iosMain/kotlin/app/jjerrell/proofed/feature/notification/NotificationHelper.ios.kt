@@ -9,17 +9,9 @@ actual class NotificationHelper {
         remainingTime: Duration,
         title: String,
         message: String
-    ) {
-    }
+    ) {}
 
-    actual fun showNotification(
-        timerId: Uuid,
-        title: String,
-        message: String
-    ) {
-    }
+    actual fun showNotification(timerId: Uuid, title: String, message: String) {}
 
-    actual fun clearNotification(timerId: Uuid) {
-
-    }
+    actual fun clearNotification(timerId: Uuid) {}
 }

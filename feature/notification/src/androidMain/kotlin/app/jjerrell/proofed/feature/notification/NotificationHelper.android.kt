@@ -17,23 +17,25 @@ actual class NotificationHelper(private val context: Context) {
         title: String,
         message: String
     ) {
-        val notification = NotificationCompat.Builder(context, ChannelIdentifier)
-            .setContentTitle(title)
-            .setContentText("Remaining time: $remainingTime")
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
+        val notification =
+            NotificationCompat.Builder(context, ChannelIdentifier)
+                .setContentTitle(title)
+                .setContentText("Remaining time: $remainingTime")
+                .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .build()
 
         showNotification(notification, timerId.hashCode())
     }
 
     actual fun showNotification(timerId: Uuid, title: String, message: String) {
-        val notification = NotificationCompat.Builder(context, ChannelIdentifier)
-            .setContentTitle(title)
-            .setContentText(message)
-            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
-            .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .build()
+        val notification =
+            NotificationCompat.Builder(context, ChannelIdentifier)
+                .setContentTitle(title)
+                .setContentText(message)
+                .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+                .setPriority(NotificationCompat.PRIORITY_HIGH)
+                .build()
 
         showNotification(notification, timerId.hashCode())
     }
@@ -57,9 +59,10 @@ actual class NotificationHelper(private val context: Context) {
         description: String = "Notifications for Timer",
         importance: Int = NotificationManager.IMPORTANCE_HIGH
     ) {
-        val channel = NotificationChannel(channelId, name, importance).apply {
-            this.description = description
-        }
+        val channel =
+            NotificationChannel(channelId, name, importance).apply {
+                this.description = description
+            }
 
         // Register the channel with the system
         val notificationManager =

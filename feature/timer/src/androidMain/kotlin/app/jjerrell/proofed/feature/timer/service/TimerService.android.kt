@@ -13,26 +13,20 @@ import app.jjerrell.proofed.feature.notification.ChannelIdentifier
 import app.jjerrell.proofed.feature.notification.NotificationHelper
 import app.jjerrell.proofed.feature.timer.TimerData
 import app.jjerrell.proofed.feature.timer.util.toBundle
+import kotlin.uuid.Uuid
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
-import kotlin.uuid.Uuid
 
-/**
- * Service class for Android timer functionality.
- */
+/** Service class for Android timer functionality. */
 internal actual class TimerService : Service(), KoinComponent, ITimerService {
     private val context: Context by inject<Context>()
     private val notificationHelper by inject<NotificationHelper>()
 
-    actual override fun startTimer(
-        timerData: TimerData
-    ) {
+    actual override fun startTimer(timerData: TimerData) {
         startService(context, timerData)
     }
 
-    actual override fun updateTimer(
-        timerData: TimerData
-    ) {
+    actual override fun updateTimer(timerData: TimerData) {
         val notification = buildNotification(timerData.remaining.toString())
         // Update the notification with the remaining time
         notificationHelper.showNotification(notification, timerData.id.hashCode())
@@ -45,7 +39,7 @@ internal actual class TimerService : Service(), KoinComponent, ITimerService {
 
     override fun onCreate() {
         super.onCreate()
-        createNotificationChannel()  // Ensure the notification channel is created
+        createNotificationChannel() // Ensure the notification channel is created
     }
 
     override fun onStartCommand(intent: Intent?, flags: Int, startId: Int): Int {
@@ -58,12 +52,9 @@ internal actual class TimerService : Service(), KoinComponent, ITimerService {
                         timerId,
                         buildNotification(remaining),
                         ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED
-                    )  // Start the service in the foreground
+                    ) // Start the service in the foreground
                 } else {
-                    startForeground(
-                        timerId,
-                        buildNotification(remaining)
-                    )
+                    startForeground(timerId, buildNotification(remaining))
                 }
             }
             "STOP_SERVICE" -> {
@@ -72,15 +63,15 @@ internal actual class TimerService : Service(), KoinComponent, ITimerService {
             }
         }
 
-        return START_NOT_STICKY  // Ensure the service doesn't restart automatically
+        return START_NOT_STICKY // Ensure the service doesn't restart automatically
     }
 
     override fun onDestroy() {
         super.onDestroy()
-        stopService(context)  // Ensure the service is stopped when the app is closed
+        stopService(context) // Ensure the service is stopped when the app is closed
     }
 
-    override fun onBind(intent: Intent?): IBinder? = null  // Not used for this service
+    override fun onBind(intent: Intent?): IBinder? = null // Not used for this service
 
     // Helper function to build the notification
     private fun buildNotification(remainingTime: String): Notification =
@@ -89,8 +80,8 @@ internal actual class TimerService : Service(), KoinComponent, ITimerService {
             .setContentText("Remaining Time: $remainingTime")
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
-            .setOnlyAlertOnce(true)  // Prevents the notification sound from repeating
-            .setOngoing(true)  // Keeps the notification persistent
+            .setOnlyAlertOnce(true) // Prevents the notification sound from repeating
+            .setOngoing(true) // Keeps the notification persistent
             .build()
 
     // Helper function to create the notification channel (required for Android 8.0+)
@@ -116,8 +107,8 @@ internal actual class TimerService : Service(), KoinComponent, ITimerService {
 
         private fun stopService(context: Context) {
             val timerIntent = Intent(context, TimerService::class.java)
-            timerIntent.action = "STOP_SERVICE"  // Define the stop action
-            context.startService(timerIntent)  // Send the intent to stop the service
+            timerIntent.action = "STOP_SERVICE" // Define the stop action
+            context.startService(timerIntent) // Send the intent to stop the service
         }
     }
 }
