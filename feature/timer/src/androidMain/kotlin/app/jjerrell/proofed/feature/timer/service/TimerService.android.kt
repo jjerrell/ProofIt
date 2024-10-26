@@ -1,17 +1,18 @@
-package app.jjerrell.proofed.feature.timer
+package app.jjerrell.proofed.feature.timer.service
 
 import android.app.Notification
 import android.app.NotificationManager
 import android.app.Service
 import android.content.Context
 import android.content.Intent
-import android.content.pm.ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED
+import android.content.pm.ServiceInfo
 import android.os.Build
-import android.os.Bundle
 import android.os.IBinder
 import androidx.core.app.NotificationCompat
 import app.jjerrell.proofed.feature.notification.ChannelIdentifier
 import app.jjerrell.proofed.feature.notification.NotificationHelper
+import app.jjerrell.proofed.feature.timer.TimerData
+import app.jjerrell.proofed.feature.timer.util.toBundle
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.inject
 import kotlin.uuid.Uuid
@@ -19,18 +20,17 @@ import kotlin.uuid.Uuid
 /**
  * Service class for Android timer functionality.
  */
-actual class TimerService(
-    private val context: Context
-) : Service(), KoinComponent {
+internal actual class TimerService : Service(), KoinComponent, ITimerService {
+    private val context: Context by inject<Context>()
     private val notificationHelper by inject<NotificationHelper>()
 
-    actual fun startTimer(
+    actual override fun startTimer(
         timerData: TimerData
     ) {
         startService(context, timerData)
     }
 
-    actual fun updateTimer(
+    actual override fun updateTimer(
         timerData: TimerData
     ) {
         val notification = buildNotification(timerData.remaining.toString())
@@ -38,7 +38,7 @@ actual class TimerService(
         notificationHelper.showNotification(notification, timerData.id.hashCode())
     }
 
-    actual fun stopTimer(timerData: TimerData) {
+    actual override fun stopTimer(timerData: TimerData) {
         stopService(context)
         removeNotification(timerData.id)
     }
@@ -57,7 +57,7 @@ actual class TimerService(
                     startForeground(
                         timerId,
                         buildNotification(remaining),
-                        FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED
+                        ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED
                     )  // Start the service in the foreground
                 } else {
                     startForeground(
@@ -115,16 +115,9 @@ actual class TimerService(
         }
 
         private fun stopService(context: Context) {
-            val intent = Intent(context, TimerService::class.java)
-            intent.action = "STOP_SERVICE"  // Define the stop action
-            context.startService(intent)  // Send the intent to stop the service
-        }
-
-        private fun TimerData.toBundle(): Bundle {
-            val bundle = Bundle()
-            bundle.putInt("id", id.hashCode())
-            bundle.putString("remaining", remaining.toString())
-            return bundle
+            val timerIntent = Intent(context, TimerService::class.java)
+            timerIntent.action = "STOP_SERVICE"  // Define the stop action
+            context.startService(timerIntent)  // Send the intent to stop the service
         }
     }
 }

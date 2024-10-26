@@ -1,6 +1,5 @@
 package app.jjerrell.proofed.feature.notification
 
-import kotlinx.datetime.Instant
 import kotlin.time.Duration
 import kotlin.uuid.Uuid
 
@@ -13,9 +12,8 @@ actual class NotificationHelper {
     ) {
     }
 
-    actual fun scheduleTimerAlarm(
+    actual fun showNotification(
         timerId: Uuid,
-        triggerTime: Instant,
         title: String,
         message: String
     ) {

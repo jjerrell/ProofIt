@@ -7,7 +7,8 @@ data class TimerData(
     val id: Uuid,
     val duration: Duration,
     var remaining: Duration = duration,
-    var state: TimerState = TimerState.Idle
+    var state: TimerState = TimerState.Idle,
+    var isAlarm: Boolean = false
 )
 
 sealed interface TimerState {

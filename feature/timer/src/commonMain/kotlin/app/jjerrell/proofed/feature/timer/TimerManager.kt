@@ -1,5 +1,7 @@
 package app.jjerrell.proofed.feature.timer
 
+import app.jjerrell.proofed.feature.timer.service.TimerAlarmService
+import app.jjerrell.proofed.feature.timer.service.TimerService
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.Job
@@ -16,12 +18,14 @@ import kotlin.time.Duration
 import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.Uuid
 
-class TimerManager(
+class TimerManager internal constructor(
     id: Uuid,
     duration: Duration,
-    private val timerService: TimerService
+    isAlarm: Boolean,
+    private val timerService: TimerService,
+    private val alarmService: TimerAlarmService
 ) : KoinComponent {
-    private val dataStateFlow = MutableStateFlow(TimerData(id, duration))
+    private val dataStateFlow = MutableStateFlow(TimerData(id, duration, isAlarm = isAlarm))
 
     val timerStateFlow: StateFlow<TimerState> = dataStateFlow.map { it.state }.stateIn(
         CoroutineScope(Dispatchers.Default),
@@ -40,8 +44,12 @@ class TimerManager(
         if (timerJob?.isActive == true) return
 
         dataStateFlow.update {
-            it.copy(state = TimerState.Running).also { updatedState ->
-                timerService.startTimer(updatedState)
+            it.copy(state = TimerState.Running).also { updatedTimer ->
+                if (updatedTimer.isAlarm) {
+                    alarmService.startTimer(updatedTimer)
+                } else {
+                    timerService.startTimer(updatedTimer)
+                }
             }
         }
 
@@ -52,7 +60,14 @@ class TimerManager(
 
     fun pause() {
         if (dataStateFlow.value.state == TimerState.Running) {
-            dataStateFlow.update { it.copy(state = TimerState.Paused) }
+            dataStateFlow.update {
+                it.copy(state = TimerState.Paused).also { updatedTimer ->
+                    // Stop the alarm since any resume will result in a new trigger time
+                    if (updatedTimer.isAlarm) {
+                        alarmService.stopTimer(updatedTimer)
+                    }
+                }
+            }
             timerJob?.cancel()
             timerJob = null
         }
@@ -60,8 +75,12 @@ class TimerManager(
 
     fun stop() {
         dataStateFlow.update {
-            it.copy(remaining = it.duration, state = TimerState.Idle).also {
-                timerService.stopTimer(it)
+            it.copy(remaining = it.duration, state = TimerState.Idle).also { updatedTimer ->
+                if (updatedTimer.isAlarm) {
+                    alarmService.stopTimer(updatedTimer)
+                } else {
+                    timerService.stopTimer(updatedTimer)
+                }
             }
         }
         timerJob?.cancel()
@@ -73,13 +92,17 @@ class TimerManager(
             dataStateFlow.value.state == TimerState.Running) {
 
             // Update the remaining time before delay to synchronize with tests
-            dataStateFlow.update { currentState ->
-                val newTime = currentState.remaining - 1.seconds
-                currentState.copy(
+            dataStateFlow.update {
+                val newTime = it.remaining - 1.seconds
+                it.copy(
                     remaining = newTime,
                     state = if (newTime <= Duration.ZERO) TimerState.Idle else TimerState.Running
-                ).also {
-                    timerService.updateTimer(it)
+                ).also { updatedTimer ->
+                    if (updatedTimer.isAlarm) {
+                        alarmService.updateTimer(updatedTimer)
+                    } else {
+                        timerService.updateTimer(updatedTimer)
+                    }
                 }
             }
 

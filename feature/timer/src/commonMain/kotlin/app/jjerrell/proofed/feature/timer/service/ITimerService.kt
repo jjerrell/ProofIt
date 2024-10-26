@@ -1,6 +1,11 @@
-package app.jjerrell.proofed.feature.timer
+package app.jjerrell.proofed.feature.timer.service
 
-expect class TimerService {
+import app.jjerrell.proofed.feature.timer.TimerData
+
+/**
+ * Timer service abstraction
+ */
+interface ITimerService {
     fun startTimer(
         timerData: TimerData
     )

@@ -5,7 +5,6 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import androidx.core.app.NotificationCompat
-import kotlinx.datetime.Instant
 import kotlin.time.Duration
 import kotlin.uuid.Uuid
 
@@ -28,25 +27,28 @@ actual class NotificationHelper(private val context: Context) {
         showNotification(notification, timerId.hashCode())
     }
 
+    actual fun showNotification(timerId: Uuid, title: String, message: String) {
+        val notification = NotificationCompat.Builder(context, ChannelIdentifier)
+            .setContentTitle(title)
+            .setContentText(message)
+            .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
+            .setPriority(NotificationCompat.PRIORITY_HIGH)
+            .build()
+
+        showNotification(notification, timerId.hashCode())
+    }
+
+    actual fun clearNotification(timerId: Uuid) {
+        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
+        manager.cancel(timerId.hashCode())
+    }
+
     fun showNotification(
         notification: Notification,
         notificationId: Int = notification.hashCode(),
     ) {
         val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
         manager.notify(notificationId, notification)
-    }
-
-    actual fun scheduleTimerAlarm(
-        timerId: Uuid,
-        triggerTime: Instant,
-        title: String,
-        message: String
-    ) {
-    }
-
-    actual fun clearNotification(timerId: Uuid) {
-        val manager = context.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager
-        manager.cancel(timerId.hashCode())
     }
 
     fun createNotificationChannel(
