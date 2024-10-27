@@ -37,7 +37,11 @@ internal actual class TimerService : Service(), KoinComponent, ITimerService {
                 message = timerData.description ?: "Your timer has finished."
             )
         } else {
-            val notification = buildNotification(timerData.remaining.toString())
+            val notification =
+                buildNotification(
+                    title = timerData.description ?: timerData.title,
+                    remainingTime = timerData.remaining.toString()
+                )
             // Update the notification with the remaining time
             notificationHelper.showNotification(notification, timerData.id.hashCode())
         }
@@ -63,13 +67,19 @@ internal actual class TimerService : Service(), KoinComponent, ITimerService {
                 if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.UPSIDE_DOWN_CAKE) {
                     startForeground(
                         serviceTimerId,
-                        buildNotification(notificationRemaining.toString()),
+                        buildNotification(
+                            title = timerData.message,
+                            notificationRemaining.toString()
+                        ),
                         ServiceInfo.FOREGROUND_SERVICE_TYPE_SYSTEM_EXEMPTED
                     ) // Start the service in the foreground
                 } else {
                     startForeground(
                         serviceTimerId,
-                        buildNotification(notificationRemaining.toString())
+                        buildNotification(
+                            title = timerData.message,
+                            notificationRemaining.toString()
+                        )
                     )
                 }
             }
@@ -90,9 +100,12 @@ internal actual class TimerService : Service(), KoinComponent, ITimerService {
     override fun onBind(intent: Intent?): IBinder? = null // Not used for this service
 
     // Helper function to build the notification
-    private fun buildNotification(remainingTime: String): Notification =
+    private fun buildNotification(
+        title: String = "Timer Running",
+        remainingTime: String
+    ): Notification =
         NotificationCompat.Builder(context, ChannelIdentifier)
-            .setContentTitle("Timer Running")
+            .setContentTitle(title)
             .setContentText("Remaining Time: $remainingTime")
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setPriority(NotificationCompat.PRIORITY_HIGH)

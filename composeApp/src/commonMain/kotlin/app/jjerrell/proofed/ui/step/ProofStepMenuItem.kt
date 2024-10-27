@@ -25,7 +25,14 @@ import org.koin.core.parameter.parametersOf
 
 class ProofStepViewModel(private val proofStepId: Uuid) : ViewModel(), KoinComponent {
     private val timerManager: TimerManager by lazy {
-        get<TimerManager> { parametersOf(proofStepId, proofStep.duration, proofStep.isAlarmOnly) }
+        get<TimerManager> {
+            parametersOf(
+                proofStepId,
+                proofStep.duration,
+                proofStep.isAlarmOnly,
+                proofSequence.name + " - " + proofStep.name
+            )
+        }
     }
 
     val proofSequence: ProofSequence by derivedStateOf {
