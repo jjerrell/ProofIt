@@ -1,5 +1,8 @@
 package app.jjerrell.proofed.ui.component
 
+import androidx.compose.animation.AnimatedVisibility
+import androidx.compose.animation.fadeIn
+import androidx.compose.animation.fadeOut
 import androidx.compose.material.Icon
 import androidx.compose.material.IconButton
 import androidx.compose.material.Text
@@ -25,7 +28,7 @@ fun ProofAppBar(
         title = { Text(stringResource(currentScreen.title)) },
         modifier = modifier,
         navigationIcon = {
-            if (canNavigateBack) {
+            AnimatedVisibility(visible = canNavigateBack, enter = fadeIn(), exit = fadeOut()) {
                 IconButton(onClick = navigateUp) {
                     Icon(
                         imageVector = Icons.Filled.ArrowBack,

@@ -22,5 +22,9 @@ data class ProofSequence(
                 name = "Sourdough - Feeding",
                 steps = ProofStep.feedingSteps
             )
+        val testSequence =
+            ProofSequence(id = Uuid.random(), name = "Test Sequence", steps = ProofStep.testSteps)
+
+        val allSequences = listOf(loafSequence, feedingSequence, testSequence)
     }
 }

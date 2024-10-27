@@ -3,4 +3,8 @@
     <string name="view_sequence">View %s Sequence</string>
     <string name="timer">Timer</string>
     <string name="back_button">Go back</string>
+    <plurals name="sequence_count">
+        <item quantity="one">%1$d step</item>
+        <item quantity="other">%1$d steps</item>
+    </plurals>
 </resources>

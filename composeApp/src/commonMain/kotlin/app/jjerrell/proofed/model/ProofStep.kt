@@ -10,7 +10,8 @@ data class ProofStep(
     val id: Uuid,
     val name: String,
     val duration: Duration,
-    val frequency: Frequency
+    val frequency: Frequency,
+    val isAlarmOnly: Boolean = false
 ) {
     companion object {
         val loafSteps =
@@ -53,20 +54,34 @@ data class ProofStep(
                     id = Uuid.random(),
                     name = "Feed Starter",
                     duration = 12.hours,
-                    frequency = Frequency.UNTIL_CANCEL
+                    frequency = Frequency.UNTIL_CANCEL,
+                    isAlarmOnly = true
                 ),
                 ProofStep(
                     id = Uuid.random(),
                     name = "Feed Starter - Dormant",
                     duration = 7.days,
-                    frequency = Frequency.UNTIL_CANCEL
+                    frequency = Frequency.UNTIL_CANCEL,
+                    isAlarmOnly = true
+                )
+            )
+
+        val testSteps =
+            listOf(
+                ProofStep(
+                    id = Uuid.random(),
+                    name = "Test Alarm",
+                    duration = 10.seconds,
+                    frequency = Frequency.UNTIL_CANCEL,
+                    isAlarmOnly = true
                 ),
                 ProofStep(
                     id = Uuid.random(),
-                    name = "Test",
-                    duration = 5.seconds,
-                    frequency = Frequency.UNTIL_CANCEL
-                )
+                    name = "Test Timer",
+                    duration = 20.seconds,
+                    frequency = Frequency.UNTIL_CANCEL,
+                    isAlarmOnly = false
+                ),
             )
     }
 }

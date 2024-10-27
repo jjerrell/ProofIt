@@ -35,6 +35,8 @@ kotlin {
             implementation(projects.feature.notification)
 
             implementation(libs.koin.compose.core)
+            implementation(libs.koin.compose.vm.core)
+            implementation(libs.koin.compose.vm.nav)
 
             implementation(compose.runtime)
             implementation(compose.foundation)
