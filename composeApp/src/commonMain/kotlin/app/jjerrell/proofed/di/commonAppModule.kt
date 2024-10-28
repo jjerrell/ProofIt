@@ -5,5 +5,7 @@ import org.koin.core.module.dsl.viewModel
 import org.koin.dsl.module
 
 val commonAppModule = module {
-    viewModel { parameters -> ProofStepViewModel(proofStepId = parameters.get()) }
+    viewModel { parameters ->
+        ProofStepViewModel(sequence = parameters.get(), proofStep = parameters.get())
+    }
 }

@@ -11,6 +11,8 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import app.jjerrell.proofed.model.ProofSequence
+import app.jjerrell.proofed.model.ProofStep
 import app.jjerrell.proofed.ui.component.MenuItem
 import kotlin.uuid.Uuid
 import org.koin.compose.viewmodel.koinViewModel
@@ -21,10 +23,12 @@ fun ProofStepMenuItem(
     modifier: Modifier = Modifier,
     isExpanded: Boolean,
     stepItemId: Uuid,
+    sequence: ProofSequence,
+    sequenceStep: ProofStep,
     onClick: () -> Unit
 ) {
     val viewModel: ProofStepViewModel =
-        koinViewModel(key = stepItemId.toHexString()) { parametersOf(stepItemId) }
+        koinViewModel(key = stepItemId.toHexString()) { parametersOf(sequence, sequenceStep) }
     LaunchedEffect(isExpanded) { viewModel.toggleTimer(isExpanded) }
     Column(modifier = modifier) {
         MenuItem(

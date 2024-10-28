@@ -19,6 +19,8 @@ fun ProofSequencePage(modifier: Modifier = Modifier, proofSequence: ProofSequenc
             ProofStepMenuItem(
                 isExpanded = isExpanded,
                 stepItemId = stepItem.id,
+                sequence = proofSequence,
+                sequenceStep = stepItem,
                 onClick = { isExpanded = !isExpanded }
             )
         }

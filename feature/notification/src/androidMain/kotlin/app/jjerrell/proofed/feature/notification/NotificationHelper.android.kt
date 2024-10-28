@@ -20,7 +20,7 @@ actual class NotificationHelper(private val context: Context) {
         val notification =
             NotificationCompat.Builder(context, ChannelIdentifier)
                 .setContentTitle(title)
-                .setContentText("Remaining time: $remainingTime")
+                .setContentText("$remainingTime")
                 .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
                 .setPriority(NotificationCompat.PRIORITY_HIGH)
                 .build()

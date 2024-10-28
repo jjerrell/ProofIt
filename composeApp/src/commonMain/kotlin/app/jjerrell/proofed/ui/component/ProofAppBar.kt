@@ -13,8 +13,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import app.jjerrell.proofed.ui.navigation.ProofScreen
 import org.jetbrains.compose.resources.stringResource
-import proofed.composeapp.generated.resources.Res
-import proofed.composeapp.generated.resources.back_button
+import proofit.composeapp.generated.resources.Res
+import proofit.composeapp.generated.resources.back_button
 
 /** Composable that displays the topBar and displays back button if back navigation is possible. */
 @Composable

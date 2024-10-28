@@ -1,4 +1,4 @@
-rootProject.name = "Proofed"
+rootProject.name = "ProofIt"
 enableFeaturePreview("TYPESAFE_PROJECT_ACCESSORS")
 
 pluginManagement {

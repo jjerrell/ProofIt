@@ -106,7 +106,7 @@ internal actual class TimerService : Service(), KoinComponent, ITimerService {
     ): Notification =
         NotificationCompat.Builder(context, ChannelIdentifier)
             .setContentTitle(title)
-            .setContentText("Remaining Time: $remainingTime")
+            .setContentText(remainingTime)
             .setSmallIcon(android.R.drawable.ic_lock_idle_alarm)
             .setPriority(NotificationCompat.PRIORITY_HIGH)
             .setOnlyAlertOnce(true) // Prevents the notification sound from repeating

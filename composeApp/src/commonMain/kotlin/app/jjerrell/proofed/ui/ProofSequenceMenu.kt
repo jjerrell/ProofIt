@@ -13,8 +13,8 @@ import app.jjerrell.proofed.model.ProofSequence
 import app.jjerrell.proofed.ui.component.MenuItem
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
-import proofed.composeapp.generated.resources.Res
-import proofed.composeapp.generated.resources.sequence_count
+import proofit.composeapp.generated.resources.Res
+import proofit.composeapp.generated.resources.sequence_count
 
 @Composable
 @Preview
