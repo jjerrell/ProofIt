@@ -5,8 +5,12 @@ import kotlin.time.Duration
 import kotlin.uuid.Uuid
 import org.koin.dsl.module
 
+private val timerInstanceCache = mutableMapOf<Uuid, TimerManager>()
+
 val timerModule = module {
     factory { (id: Uuid, duration: Duration, isAlarm: Boolean, description: String?) ->
-        TimerManager(id, duration, isAlarm, description, get(), get())
+        timerInstanceCache.getOrPut(id) {
+            TimerManager(id, duration, isAlarm, description, get(), get())
+        }
     }
 }
