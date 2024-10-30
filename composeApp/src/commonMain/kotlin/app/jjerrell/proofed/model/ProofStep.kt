@@ -3,6 +3,7 @@ package app.jjerrell.proofed.model
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
+import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.Uuid
 
@@ -19,31 +20,31 @@ data class ProofStep(
                 ProofStep(
                     id = Uuid.random(),
                     name = "Autolyse",
-                    duration = 3600.seconds,
+                    duration = 1.hours,
                     frequency = Frequency.ONCE
                 ),
                 ProofStep(
                     id = Uuid.random(),
                     name = "Stretch and Fold",
-                    duration = 1800.seconds,
+                    duration = 30.minutes,
                     frequency = Frequency.UNTIL_CANCEL
                 ),
                 ProofStep(
                     id = Uuid.random(),
                     name = "Bulk Ferment",
-                    duration = 43200.seconds,
+                    duration = 12.hours,
                     frequency = Frequency.ONCE
                 ),
                 ProofStep(
                     id = Uuid.random(),
                     name = "Bake - Covered",
-                    duration = 2400.seconds,
+                    duration = 40.minutes,
                     frequency = Frequency.ONCE
                 ),
                 ProofStep(
                     id = Uuid.random(),
                     name = "Bake - Uncovered",
-                    duration = 1200.seconds,
+                    duration = 20.minutes,
                     frequency = Frequency.ONCE
                 )
             )
@@ -77,8 +78,22 @@ data class ProofStep(
                 ),
                 ProofStep(
                     id = Uuid.random(),
+                    name = "Test Long Alarm",
+                    duration = 1.minutes,
+                    frequency = Frequency.UNTIL_CANCEL,
+                    isAlarmOnly = true
+                ),
+                ProofStep(
+                    id = Uuid.random(),
                     name = "Test Timer",
                     duration = 20.seconds,
+                    frequency = Frequency.UNTIL_CANCEL,
+                    isAlarmOnly = false
+                ),
+                ProofStep(
+                    id = Uuid.random(),
+                    name = "Test Long Timer",
+                    duration = 1.minutes,
                     frequency = Frequency.UNTIL_CANCEL,
                     isAlarmOnly = false
                 ),
