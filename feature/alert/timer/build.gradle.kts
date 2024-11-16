@@ -14,16 +14,23 @@ kotlin {
 
     listOf(iosX64(), iosArm64(), iosSimulatorArm64()).forEach { iosTarget ->
         iosTarget.binaries.framework {
-            baseName = "NotificationFeature"
+            baseName = "TimerFeature"
             isStatic = true
         }
     }
 
     sourceSets {
-        all { languageSettings { optIn("kotlin.uuid.ExperimentalUuidApi") } }
+        all {
+            languageSettings {
+                optIn("kotlin.uuid.ExperimentalUuidApi")
+                optIn("kotlinx.coroutines.ExperimentalCoroutinesApi")
+            }
+        }
 
         androidMain.dependencies { implementation(libs.androidx.core) }
         commonMain.dependencies {
+            implementation(projects.feature.alert.notification)
+
             implementation(libs.koin.core)
 
             implementation(libs.kotlinx.coroutines.core)
@@ -39,7 +46,7 @@ kotlin {
 }
 
 android {
-    namespace = "app.jjerrell.proofed.feature.notification"
+    namespace = "app.jjerrell.proofed.feature.timer"
     compileSdk = libs.versions.android.compileSdk.get().toInt()
     packaging { resources { excludes += "/META-INF/{AL2.0,LGPL2.1}" } }
     compileOptions {

@@ -29,5 +29,10 @@ dependencyResolutionManagement {
 }
 
 include(":composeApp")
-include(":feature:timer")
-include(":feature:notification")
+
+include(":feature:alert:timer")
+include(":feature:alert:notification")
+
+include(":feature:data:api")
+include(":feature:data:local")
+include(":feature:data:glue")
