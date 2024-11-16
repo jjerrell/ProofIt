@@ -5,7 +5,7 @@ plugins {
     alias(libs.plugins.kotlinMultiplatform)
     alias(libs.plugins.androidApplication)
     alias(libs.plugins.jetbrainsCompose)
-    alias(libs.plugins.compose.compiler)
+    alias(libs.plugins.kotlinCompose)
 }
 
 kotlin {
@@ -31,8 +31,9 @@ kotlin {
             implementation(libs.koin.android)
         }
         commonMain.dependencies {
-            implementation(projects.feature.timer)
-            implementation(projects.feature.notification)
+            implementation(projects.feature.alert.timer)
+            implementation(projects.feature.alert.notification)
+            implementation(projects.feature.data.glue)
 
             implementation(libs.koin.compose.core)
             implementation(libs.koin.compose.vm.core)
