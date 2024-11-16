@@ -27,7 +27,9 @@ kotlin {
             }
         }
 
-        androidMain.dependencies { implementation(libs.androidx.core) }
+        androidMain.dependencies {
+            implementation(libs.androidx.core)
+        }
         commonMain.dependencies {
             implementation(projects.feature.alert.notification)
 
