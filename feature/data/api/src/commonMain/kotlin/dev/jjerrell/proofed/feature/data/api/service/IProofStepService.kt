@@ -4,21 +4,21 @@ import dev.jjerrell.proofed.feature.data.api.model.ProofStep
 import kotlin.uuid.Uuid
 
 interface IProofStepService {
-    fun getAllSequenceSteps(
+    suspend fun getAllSequenceSteps(
         sequenceId: Uuid
     ): List<ProofStep>
 
-    fun addSequenceStep(
+    suspend fun addSequenceStep(
         sequenceId: Uuid,
         step: ProofStep
     )
 
-    fun removeSequenceStep(
+    suspend fun removeSequenceStep(
         sequenceId: Uuid,
         stepId: Uuid
     )
 
-    fun updateSequenceStep(
+    suspend fun updateSequenceStep(
         sequenceId: Uuid,
         step: ProofStep
     )

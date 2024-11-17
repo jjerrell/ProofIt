@@ -6,6 +6,6 @@ import kotlin.uuid.Uuid
 class ProofSequenceUseCases(
     val localRepository: LocalRepository
 ) {
-    fun getAllSequences() = localRepository.getAllSequences()
-    fun getSequence(sequenceId: Uuid) = localRepository.getSequence(sequenceId)
+    suspend fun getAllSequences() = localRepository.getAllSequences()
+    suspend fun getSequence(sequenceId: Uuid) = localRepository.getSequence(sequenceId)
 }

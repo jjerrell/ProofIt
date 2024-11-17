@@ -16,7 +16,7 @@ class LocalRepository internal constructor(
     private val localProofStepService: InMemoryProofStepService
 ) : IProofSequenceService, IProofStepService {
     //region IProofSequenceService
-    override fun getAllSequences(): List<ProofSequence> {
+    override suspend fun getAllSequences(): List<ProofSequence> {
         return localProofService.getAllSequences().map {
             ProofSequence(
                 id = it.id,
@@ -27,7 +27,7 @@ class LocalRepository internal constructor(
         }
     }
 
-    override fun getSequence(sequenceId: Uuid): ProofSequence? {
+    override suspend fun getSequence(sequenceId: Uuid): ProofSequence? {
         return localProofService.getSequence(sequenceId)?.let {
             ProofSequence(
                 id = it.id,
@@ -38,7 +38,7 @@ class LocalRepository internal constructor(
         }
     }
 
-    override fun addSequence(sequence: ProofSequence) {
+    override suspend fun addSequence(sequence: ProofSequence) {
         localProofService.addSequence(
             sequence = sequence.let {
                 ProofSequenceEntity(
@@ -50,11 +50,11 @@ class LocalRepository internal constructor(
         )
     }
 
-    override fun removeSequence(sequenceId: Uuid) {
+    override suspend fun removeSequence(sequenceId: Uuid) {
         localProofService.removeSequence(sequenceId)
     }
 
-    override fun updateSequence(sequence: ProofSequence) {
+    override suspend fun updateSequence(sequence: ProofSequence) {
         localProofService.updateSequence(
             sequence = sequence.let {
                 ProofSequenceEntity(
@@ -67,7 +67,7 @@ class LocalRepository internal constructor(
     }
     //endregion
     //region IProofStepService
-    override fun getAllSequenceSteps(sequenceId: Uuid): List<ProofStep> {
+    override suspend fun getAllSequenceSteps(sequenceId: Uuid): List<ProofStep> {
         return localProofStepService
             .getAllSequenceSteps(sequenceId)
             .map {
@@ -81,7 +81,7 @@ class LocalRepository internal constructor(
             }
     }
 
-    override fun addSequenceStep(sequenceId: Uuid, step: ProofStep) {
+    override suspend fun addSequenceStep(sequenceId: Uuid, step: ProofStep) {
         localProofStepService.addSequenceStep(
             sequenceId = sequenceId,
             step = step.let {
@@ -97,11 +97,11 @@ class LocalRepository internal constructor(
         )
     }
 
-    override fun removeSequenceStep(sequenceId: Uuid, stepId: Uuid) {
+    override suspend fun removeSequenceStep(sequenceId: Uuid, stepId: Uuid) {
         localProofStepService.removeSequenceStep(sequenceId, stepId)
     }
 
-    override fun updateSequenceStep(sequenceId: Uuid, step: ProofStep) {
+    override suspend fun updateSequenceStep(sequenceId: Uuid, step: ProofStep) {
         localProofStepService.updateSequenceStep(
             sequenceId = sequenceId,
             step = step.let {
