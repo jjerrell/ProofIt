@@ -12,7 +12,6 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
-import app.jjerrell.proofed.model.ProofSequence
 import app.jjerrell.proofed.ui.ProofSequenceMenu
 import app.jjerrell.proofed.ui.ProofSequencePage
 import app.jjerrell.proofed.ui.component.ProofAppBar
@@ -20,6 +19,8 @@ import app.jjerrell.proofed.ui.navigation.ProofScreen
 import app.jjerrell.proofed.ui.timer.demo.TimerLayout
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
+import org.koin.compose.viewmodel.koinViewModel
+import kotlin.uuid.Uuid
 
 @Composable
 @Preview
@@ -50,6 +51,7 @@ fun App(navController: NavHostController = rememberNavController()) {
                 ) {
                     composable(route = ProofScreen.Start.route) {
                         ProofSequenceMenu(
+                            viewModel = koinViewModel(),
                             onSequenceClick = {
                                 navController.navigate(
                                     ProofScreen.Sequence.name + "/${it.id.toHexString()}"
@@ -59,11 +61,10 @@ fun App(navController: NavHostController = rememberNavController()) {
                     }
                     composable(route = ProofScreen.Sequence.route) {
                         val sequenceId = it.arguments?.getString("sequenceId")
-                        val sequence =
-                            ProofSequence.allSequences.first { proofSequence ->
-                                proofSequence.id.toHexString() == sequenceId
-                            }
-                        ProofSequencePage(proofSequence = sequence)
+                        ProofSequencePage(
+                            sequenceId = sequenceId?.let { it1 -> Uuid.parseHex(it1) } ?: Uuid.NIL,
+                            viewModel = koinViewModel()
+                        )
                     }
                     composable(route = ProofScreen.TimerDemo.route) { TimerLayout() }
                 }

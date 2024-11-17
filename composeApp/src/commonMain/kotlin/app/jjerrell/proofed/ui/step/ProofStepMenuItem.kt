@@ -20,9 +20,9 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import app.jjerrell.proofed.feature.timer.TimerState
-import app.jjerrell.proofed.model.ProofSequence
-import app.jjerrell.proofed.model.ProofStep
 import app.jjerrell.proofed.ui.component.MenuItem
+import dev.jjerrell.proofed.feature.data.api.model.ProofSequence
+import dev.jjerrell.proofed.feature.data.api.model.ProofStep
 import org.koin.compose.viewmodel.koinViewModel
 import org.koin.core.parameter.parametersOf
 
@@ -40,7 +40,7 @@ fun ProofStepMenuItem(
     Column(modifier = modifier) {
         MenuItem(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { isExpanded = isExpanded.not() },
+            onClick = { isExpanded = !isExpanded },
             icon = {},
             content = {
                 Row(

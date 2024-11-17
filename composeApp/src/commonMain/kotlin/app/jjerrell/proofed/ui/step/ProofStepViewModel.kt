@@ -3,8 +3,8 @@ package app.jjerrell.proofed.ui.step
 import androidx.lifecycle.ViewModel
 import app.jjerrell.proofed.feature.timer.TimerManager
 import app.jjerrell.proofed.feature.timer.TimerState
-import app.jjerrell.proofed.model.ProofSequence
-import app.jjerrell.proofed.model.ProofStep
+import dev.jjerrell.proofed.feature.data.api.model.ProofSequence
+import dev.jjerrell.proofed.feature.data.api.model.ProofStep
 import org.koin.core.component.KoinComponent
 import org.koin.core.component.get
 import org.koin.core.parameter.parametersOf
