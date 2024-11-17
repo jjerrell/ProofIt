@@ -42,7 +42,7 @@ kotlin {
             implementation(libs.kotlin.test.common)
             //            implementation(libs.kotlin.test.junit)
             implementation(libs.kotlinx.coroutines.test)
-            implementation(libs.turbine.test)
+            //implementation(libs.turbine.test)
         }
     }
 }

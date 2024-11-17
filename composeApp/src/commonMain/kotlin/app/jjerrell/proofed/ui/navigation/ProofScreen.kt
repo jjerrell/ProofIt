@@ -10,8 +10,7 @@ enum class ProofScreen(val title: StringResource = Res.string.app_name) {
     Start,
     Sequence {
         override val route: String = super.route + "/{sequenceId}"
-    },
-    TimerDemo(title = Res.string.timer);
+    };
 
     open val route: String
         get() = name
@@ -20,7 +19,6 @@ enum class ProofScreen(val title: StringResource = Res.string.app_name) {
         fun fromRoute(route: String?): ProofScreen =
             when (route?.substringBefore("/")) {
                 Sequence.name -> Sequence
-                TimerDemo.name -> TimerDemo
                 else -> Start
             }
     }

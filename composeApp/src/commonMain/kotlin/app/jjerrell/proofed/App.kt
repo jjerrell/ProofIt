@@ -16,7 +16,6 @@ import app.jjerrell.proofed.ui.ProofSequenceMenu
 import app.jjerrell.proofed.ui.ProofSequencePage
 import app.jjerrell.proofed.ui.component.ProofAppBar
 import app.jjerrell.proofed.ui.navigation.ProofScreen
-import app.jjerrell.proofed.ui.timer.demo.TimerLayout
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import org.koin.compose.KoinContext
 import org.koin.compose.viewmodel.koinViewModel
@@ -66,7 +65,6 @@ fun App(navController: NavHostController = rememberNavController()) {
                             viewModel = koinViewModel()
                         )
                     }
-                    composable(route = ProofScreen.TimerDemo.route) { TimerLayout() }
                 }
             }
         }
