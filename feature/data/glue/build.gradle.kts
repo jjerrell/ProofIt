@@ -35,7 +35,6 @@ kotlin {
         commonTest.dependencies {
             implementation(libs.kotlin.test.common)
             implementation(libs.kotlinx.coroutines.test)
-            //implementation(libs.turbine.test)
         }
     }
 }

@@ -9,12 +9,8 @@ import org.koin.dsl.module
 
 val commonAppModule = module {
     includes(glueDataModule())
-    viewModel {
-        ProofSequenceMenuViewModel(useCases = get())
-    }
-    viewModel {
-        ProofSequencePageViewModel(useCases = get())
-    }
+    viewModel { ProofSequenceMenuViewModel(useCases = get()) }
+    viewModel { ProofSequencePageViewModel(useCases = get()) }
     viewModel { parameters ->
         ProofStepViewModel(sequence = parameters.get(), proofStep = parameters.get())
     }

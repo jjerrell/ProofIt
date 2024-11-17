@@ -6,7 +6,5 @@ import org.koin.dsl.module
 
 fun glueDataModule() = module {
     includes(localDataModule())
-    factory {
-        ProofSequenceUseCases(localRepository = get())
-    }
+    factory { ProofSequenceUseCases(localRepository = get()) }
 }

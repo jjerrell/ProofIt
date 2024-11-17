@@ -12,15 +12,9 @@ internal class InMemoryProofSequenceService {
         return ProofSequenceEntity.allSequences.find { it.id == sequenceId }
     }
 
-    fun addSequence(sequence: ProofSequenceEntity) {
+    fun addSequence(sequence: ProofSequenceEntity) {}
 
-    }
+    fun removeSequence(sequenceId: Uuid) {}
 
-    fun removeSequence(sequenceId: Uuid) {
-
-    }
-
-    fun updateSequence(sequence: ProofSequenceEntity) {
-
-    }
+    fun updateSequence(sequence: ProofSequenceEntity) {}
 }

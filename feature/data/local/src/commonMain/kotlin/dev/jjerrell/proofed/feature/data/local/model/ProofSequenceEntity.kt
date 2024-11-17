@@ -13,15 +13,13 @@ data class ProofSequenceEntity(
     val imageResourceUrl: String? = null
 ) {
     companion object {
-        val loafSequence =
-            ProofSequenceEntity(id = Uuid.random(), name = "Sourdough Loaf")
+        val loafSequence = ProofSequenceEntity(id = Uuid.random(), name = "Sourdough Loaf")
         val feedingSequence =
             ProofSequenceEntity(
                 id = Uuid.random(),
                 name = "Sourdough - Feeding",
             )
-        val testSequence =
-            ProofSequenceEntity(id = Uuid.random(), name = "Test Sequence")
+        val testSequence = ProofSequenceEntity(id = Uuid.random(), name = "Test Sequence")
 
         val allSequences = listOf(loafSequence, feedingSequence, testSequence)
     }

@@ -27,9 +27,7 @@ kotlin {
             }
         }
 
-        androidMain.dependencies {
-            implementation(libs.androidx.core)
-        }
+        androidMain.dependencies { implementation(libs.androidx.core) }
         commonMain.dependencies {
             implementation(projects.feature.alert.notification)
 
@@ -40,9 +38,7 @@ kotlin {
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test.common)
-            //            implementation(libs.kotlin.test.junit)
             implementation(libs.kotlinx.coroutines.test)
-            //implementation(libs.turbine.test)
         }
     }
 }

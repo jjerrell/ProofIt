@@ -26,26 +26,25 @@ fun ProofSequenceMenu(
     viewModel: ProofSequenceMenuViewModel,
     onSequenceClick: (ProofSequence) -> Unit = {}
 ) {
-    val isLoadingOrError = viewModel.state is ProofSequenceMenuViewModel.State.Loading || viewModel.state is ProofSequenceMenuViewModel.State.Error
+    val isLoadingOrError =
+        viewModel.state is ProofSequenceMenuViewModel.State.Loading ||
+            viewModel.state is ProofSequenceMenuViewModel.State.Error
     if (viewModel.state == null) {
-        LaunchedEffect(Unit) {
-            viewModel.getAllSequences()
-        }
+        LaunchedEffect(Unit) { viewModel.getAllSequences() }
     } else {
         LazyColumn(
             modifier = modifier,
-            verticalArrangement = if (isLoadingOrError) {
-                Arrangement.Center
-            } else {
-                Arrangement.Top
-            },
+            verticalArrangement =
+                if (isLoadingOrError) {
+                    Arrangement.Center
+                } else {
+                    Arrangement.Top
+                },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (val capturedState = viewModel.state) {
                 ProofSequenceMenuViewModel.State.Loading -> {
-                    item {
-                        CircularProgressIndicator()
-                    }
+                    item { CircularProgressIndicator() }
                 }
                 is ProofSequenceMenuViewModel.State.Success -> {
                     val sequenceItems = capturedState.sequences
@@ -80,12 +79,9 @@ fun ProofSequenceMenu(
                 is ProofSequenceMenuViewModel.State.Error -> {
                     item {
                         Text(text = "We're sorry, but something went wrong. Please try again.")
-                        TextButton(
-                            onClick = { viewModel.getAllSequences() }
-                        ) {
+                        TextButton(onClick = { viewModel.getAllSequences() }) {
                             Text(text = "Try Again")
                         }
-
                     }
                 }
                 null -> {}

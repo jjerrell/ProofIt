@@ -12,14 +12,8 @@ import org.koin.dsl.module
 fun localDataModule() = module {
     singleOf(::InMemoryProofSequenceService)
     singleOf(::InMemoryProofStepService)
-    factory {
-        LocalRepository(
-            localProofService = get(),
-            localProofStepService = get()
-        )
-    }
+    factory { LocalRepository(localProofService = get(), localProofStepService = get()) }
 
     singleOf(::LocalRepository) { bind<IProofSequenceService>() }
     singleOf(::LocalRepository) { bind<IProofStepService>() }
-
 }

@@ -11,11 +11,12 @@ import dev.jjerrell.proofed.feature.data.local.service.InMemoryProofSequenceServ
 import dev.jjerrell.proofed.feature.data.local.service.InMemoryProofStepService
 import kotlin.uuid.Uuid
 
-class LocalRepository internal constructor(
+class LocalRepository
+internal constructor(
     private val localProofService: InMemoryProofSequenceService,
     private val localProofStepService: InMemoryProofStepService
 ) : IProofSequenceService, IProofStepService {
-    //region IProofSequenceService
+    // region IProofSequenceService
     override suspend fun getAllSequences(): List<ProofSequence> {
         return localProofService.getAllSequences().map {
             ProofSequence(
@@ -40,13 +41,14 @@ class LocalRepository internal constructor(
 
     override suspend fun addSequence(sequence: ProofSequence) {
         localProofService.addSequence(
-            sequence = sequence.let {
-                ProofSequenceEntity(
-                    id = it.id,
-                    name = it.name,
-                    imageResourceUrl = it.imageResourceUrl
-                )
-            }
+            sequence =
+                sequence.let {
+                    ProofSequenceEntity(
+                        id = it.id,
+                        name = it.name,
+                        imageResourceUrl = it.imageResourceUrl
+                    )
+                }
         )
     }
 
@@ -56,44 +58,44 @@ class LocalRepository internal constructor(
 
     override suspend fun updateSequence(sequence: ProofSequence) {
         localProofService.updateSequence(
-            sequence = sequence.let {
-                ProofSequenceEntity(
-                    id = it.id,
-                    name = it.name,
-                    imageResourceUrl = it.imageResourceUrl
-                )
-            }
+            sequence =
+                sequence.let {
+                    ProofSequenceEntity(
+                        id = it.id,
+                        name = it.name,
+                        imageResourceUrl = it.imageResourceUrl
+                    )
+                }
         )
     }
-    //endregion
-    //region IProofStepService
+    // endregion
+    // region IProofStepService
     override suspend fun getAllSequenceSteps(sequenceId: Uuid): List<ProofStep> {
-        return localProofStepService
-            .getAllSequenceSteps(sequenceId)
-            .map {
-                ProofStep(
-                    id = it.id,
-                    name = it.name,
-                    duration = it.duration,
-                    frequency = Frequency.valueOf(it.frequency),
-                    isAlarmOnly = it.isAlarmOnly
-                )
-            }
+        return localProofStepService.getAllSequenceSteps(sequenceId).map {
+            ProofStep(
+                id = it.id,
+                name = it.name,
+                duration = it.duration,
+                frequency = Frequency.valueOf(it.frequency),
+                isAlarmOnly = it.isAlarmOnly
+            )
+        }
     }
 
     override suspend fun addSequenceStep(sequenceId: Uuid, step: ProofStep) {
         localProofStepService.addSequenceStep(
             sequenceId = sequenceId,
-            step = step.let {
-                ProofStepEntity(
-                    id = it.id,
-                    sequenceId = sequenceId,
-                    name = it.name,
-                    duration = it.duration,
-                    frequency = it.frequency.name,
-                    isAlarmOnly = it.isAlarmOnly
-                )
-            }
+            step =
+                step.let {
+                    ProofStepEntity(
+                        id = it.id,
+                        sequenceId = sequenceId,
+                        name = it.name,
+                        duration = it.duration,
+                        frequency = it.frequency.name,
+                        isAlarmOnly = it.isAlarmOnly
+                    )
+                }
         )
     }
 
@@ -104,17 +106,18 @@ class LocalRepository internal constructor(
     override suspend fun updateSequenceStep(sequenceId: Uuid, step: ProofStep) {
         localProofStepService.updateSequenceStep(
             sequenceId = sequenceId,
-            step = step.let {
-                ProofStepEntity(
-                    id = it.id,
-                    sequenceId = sequenceId,
-                    name = it.name,
-                    duration = it.duration,
-                    frequency = it.frequency.name,
-                    isAlarmOnly = it.isAlarmOnly
-                )
-            }
+            step =
+                step.let {
+                    ProofStepEntity(
+                        id = it.id,
+                        sequenceId = sequenceId,
+                        name = it.name,
+                        duration = it.duration,
+                        frequency = it.frequency.name,
+                        isAlarmOnly = it.isAlarmOnly
+                    )
+                }
         )
     }
-    //endregion
+    // endregion
 }

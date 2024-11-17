@@ -9,32 +9,33 @@ import dev.jjerrell.proofed.feature.data.api.model.ProofSequence
 import dev.jjerrell.proofed.feature.data.glue.ProofSequenceUseCases
 import kotlinx.coroutines.launch
 
-class ProofSequenceMenuViewModel(
-    val useCases: ProofSequenceUseCases
-) : ViewModel() {
+class ProofSequenceMenuViewModel(val useCases: ProofSequenceUseCases) : ViewModel() {
     var state: State? by mutableStateOf(null)
         private set
 
     fun getAllSequences() {
         viewModelScope.launch {
             runCatching {
-                state = State.Loading
-                useCases.getAllSequences()
-            }.onSuccess {
-                state = if (it.isEmpty()) {
-                    State.Error(Exception("No sequences found"))
-                } else {
-                    State.Success(sequences = it)
+                    state = State.Loading
+                    useCases.getAllSequences()
                 }
-            }.onFailure {
-                state = State.Error(error = it)
-            }
+                .onSuccess {
+                    state =
+                        if (it.isEmpty()) {
+                            State.Error(Exception("No sequences found"))
+                        } else {
+                            State.Success(sequences = it)
+                        }
+                }
+                .onFailure { state = State.Error(error = it) }
         }
     }
 
     sealed interface State {
         data object Loading : State
+
         data class Success(val sequences: List<ProofSequence>) : State
+
         data class Error(val error: Throwable) : State
     }
 }
