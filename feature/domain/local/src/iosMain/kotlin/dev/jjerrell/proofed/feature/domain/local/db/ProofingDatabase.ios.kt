@@ -8,9 +8,7 @@ import platform.Foundation.NSDocumentDirectory
 import platform.Foundation.NSFileManager
 import platform.Foundation.NSUserDomainMask
 
-val iosDbModule = module {
-    single { ProofingDatabaseFactory() }
-}
+val iosDbModule = module { single { ProofingDatabaseFactory() } }
 
 actual class ProofingDatabaseFactory {
     actual fun newBuilder(): RoomDatabase.Builder<ProofingDatabase> {
@@ -23,12 +21,13 @@ actual class ProofingDatabaseFactory {
 
 @OptIn(ExperimentalForeignApi::class)
 private fun documentDirectory(): String {
-    val documentDirectory = NSFileManager.defaultManager.URLForDirectory(
-        directory = NSDocumentDirectory,
-        inDomain = NSUserDomainMask,
-        appropriateForURL = null,
-        create = false,
-        error = null,
-    )
+    val documentDirectory =
+        NSFileManager.defaultManager.URLForDirectory(
+            directory = NSDocumentDirectory,
+            inDomain = NSUserDomainMask,
+            appropriateForURL = null,
+            create = false,
+            error = null,
+        )
     return requireNotNull(documentDirectory?.path)
 }

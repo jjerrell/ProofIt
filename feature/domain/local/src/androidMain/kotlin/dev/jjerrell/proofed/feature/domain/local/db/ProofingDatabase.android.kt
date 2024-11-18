@@ -5,9 +5,7 @@ import androidx.room.Room
 import androidx.room.RoomDatabase
 import org.koin.dsl.module
 
-val androidDbModule = module {
-    single { ProofingDatabaseFactory(context = get()) }
-}
+val androidDbModule = module { single { ProofingDatabaseFactory(context = get()) } }
 
 actual class ProofingDatabaseFactory(private val context: Context) {
     actual fun newBuilder(): RoomDatabase.Builder<ProofingDatabase> {

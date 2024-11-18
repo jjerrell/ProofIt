@@ -11,18 +11,17 @@ import kotlin.uuid.Uuid
 
 @Dao
 interface ProofingDao {
-    @Insert
-    suspend fun insertProofSequence(proofSequence: ProofSequenceEntity)
+    @Insert suspend fun insertProofSequence(proofSequence: ProofSequenceEntity)
 
-    @Insert
-    suspend fun insertProofStep(proofStep: ProofStepEntity)
+    @Insert suspend fun insertProofStep(proofStep: ProofStepEntity)
 
     @Transaction
-    suspend fun insertProofSequenceWithSteps(proofSequence: ProofSequenceEntity, steps: List<ProofStepEntity>) {
+    suspend fun insertProofSequenceWithSteps(
+        proofSequence: ProofSequenceEntity,
+        steps: List<ProofStepEntity>
+    ) {
         insertProofSequence(proofSequence)
-        steps.forEach { step ->
-            insertProofStep(step)
-        }
+        steps.forEach { step -> insertProofStep(step) }
     }
 
     @Query("SELECT * FROM proof_sequence WHERE id = :sequenceId")

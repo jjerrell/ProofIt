@@ -1,6 +1,5 @@
 import org.jetbrains.kotlin.gradle.ExperimentalKotlinGradlePluginApi
 import org.jetbrains.kotlin.gradle.dsl.JvmTarget
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompilationTask
 
 plugins {
     alias(libs.plugins.kotlinMultiplatform)
@@ -35,7 +34,7 @@ kotlin {
             implementation(libs.kotlinx.datetime)
 
             implementation(libs.room.runtime)
-//            implementation(libs.room.sqlite)
+            //            implementation(libs.room.sqlite)
         }
         commonTest.dependencies {
             implementation(libs.kotlin.test.common)
@@ -56,12 +55,7 @@ android {
 }
 
 dependencies {
-    listOf(
-        "kspAndroid",
-        "kspIosSimulatorArm64",
-        "kspIosX64",
-        "kspIosArm64"
-    ).forEach {
-       add(it, libs.room.compiler)
+    listOf("kspAndroid", "kspIosSimulatorArm64", "kspIosX64", "kspIosArm64").forEach {
+        add(it, libs.room.compiler)
     }
 }

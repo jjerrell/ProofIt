@@ -14,14 +14,15 @@ import kotlin.uuid.Uuid
 @Entity(
     tableName = "proof_step",
     indices = [Index("sequenceId")],
-    foreignKeys = [
-        ForeignKey(
-            entity = ProofSequenceEntity::class,
-            parentColumns = ["id"],
-            childColumns = ["sequenceId"],
-            onDelete = ForeignKey.CASCADE
-        )
-    ]
+    foreignKeys =
+        [
+            ForeignKey(
+                entity = ProofSequenceEntity::class,
+                parentColumns = ["id"],
+                childColumns = ["sequenceId"],
+                onDelete = ForeignKey.CASCADE
+            )
+        ]
 )
 data class ProofStepEntity(
     @PrimaryKey val id: Uuid,
