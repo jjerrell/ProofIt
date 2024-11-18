@@ -33,7 +33,7 @@ kotlin {
         commonMain.dependencies {
             implementation(projects.feature.alert.timer)
             implementation(projects.feature.alert.notification)
-            implementation(projects.feature.data.glue)
+            implementation(projects.feature.domain.glue)
 
             implementation(libs.koin.compose.core)
             implementation(libs.koin.compose.vm.core)

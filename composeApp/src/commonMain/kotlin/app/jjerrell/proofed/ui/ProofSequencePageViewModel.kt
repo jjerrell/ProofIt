@@ -5,8 +5,8 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import dev.jjerrell.proofed.feature.data.api.model.ProofSequence
-import dev.jjerrell.proofed.feature.data.glue.ProofSequenceUseCases
+import dev.jjerrell.proofed.feature.domain.api.model.ProofSequence
+import dev.jjerrell.proofed.feature.domain.glue.ProofSequenceUseCases
 import kotlin.uuid.Uuid
 import kotlinx.coroutines.launch
 

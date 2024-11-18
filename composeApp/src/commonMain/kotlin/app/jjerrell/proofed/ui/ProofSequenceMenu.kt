@@ -13,7 +13,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import app.jjerrell.proofed.ui.component.MenuItem
-import dev.jjerrell.proofed.feature.data.api.model.ProofSequence
+import dev.jjerrell.proofed.feature.domain.api.model.ProofSequence
 import org.jetbrains.compose.resources.pluralStringResource
 import org.jetbrains.compose.ui.tooling.preview.Preview
 import proofit.composeapp.generated.resources.Res
