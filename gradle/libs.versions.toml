@@ -6,12 +6,15 @@ android-targetSdk = "35"
 agp = "8.5.2"
 compose-plugin = "1.6.11"
 kotlin = "2.0.21"
+ksp = "2.0.21-1.0.28"
 
 androidxActivityCompose = "1.9.3"
 androidxCore = "1.13.1"
 androidxLifecycle = "2.8.2"
 koin = "4.0.0"
 kotlinxCoroutinesCore = "1.9.0"
+
+roomDb = "2.7.0-alpha11"
 
 [libraries]
 androidx-activity-compose = { module = "androidx.activity:activity-compose", version.ref = "androidxActivityCompose" }
@@ -31,6 +34,10 @@ koin-compose-vm-nav = { module = "io.insert-koin:koin-compose-viewmodel-navigati
 kotlinx-coroutines-core = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-core", version.ref = "kotlinxCoroutinesCore" }
 kotlinx-coroutines-test = { module = "org.jetbrains.kotlinx:kotlinx-coroutines-test", version.ref = "kotlinxCoroutinesCore" }
 
+room-compiler = { module = "androidx.room:room-compiler", version.ref = "roomDb" }
+room-runtime = { module = "androidx.room:room-runtime", version.ref = "roomDb" }
+room-sqlite = { module = "androidx.sqlite:sqlite-bundled", version.ref = "roomDb" }
+
 kotlin-test-common = { module = "org.jetbrains.kotlin:kotlin-test", version.ref = "kotlin" }
 
 [plugins]
@@ -40,5 +47,7 @@ jetbrainsCompose = { id = "org.jetbrains.compose", version.ref = "compose-plugin
 kotlinCompose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 kotlinMultiplatform = { id = "org.jetbrains.kotlin.multiplatform", version.ref = "kotlin" }
 kotlinJvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
+roomDb = { id = "androidx.room", version.ref = "roomDb" }
+ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
 
 spotless = { id = "com.diffplug.spotless", version = "6.21.0" }
