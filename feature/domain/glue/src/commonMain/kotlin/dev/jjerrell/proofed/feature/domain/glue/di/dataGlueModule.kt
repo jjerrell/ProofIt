@@ -4,7 +4,7 @@ import dev.jjerrell.proofed.feature.domain.glue.ProofSequenceUseCases
 import dev.jjerrell.proofed.feature.domain.local.di.localDataModule
 import org.koin.dsl.module
 
-fun glueDataModule() = module {
-    includes(localDataModule())
+internal val dataGlueModule = module {
+    includes(localDataModule)
     factory { ProofSequenceUseCases(localRepository = get()) }
 }

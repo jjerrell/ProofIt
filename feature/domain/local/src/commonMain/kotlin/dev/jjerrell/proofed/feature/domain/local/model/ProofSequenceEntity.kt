@@ -1,26 +1,46 @@
 package dev.jjerrell.proofed.feature.domain.local.model
 
+import androidx.room.Embedded
+import androidx.room.Entity
+import androidx.room.PrimaryKey
+import androidx.room.Relation
 import kotlin.uuid.Uuid
 
-/**
- * { "name": "Sourdough Loaf", "steps":
- * [ { "name": "Autolyse", "duration": 3600, "frequency": "ONCE" }, { "name": "Stretch and Fold", "duration": 1800, "frequency": "UNTIL_CANCEL" }, { "name": "Bulk Ferment", "duration": 43200, "frequency": "ONCE" }, { "name": "Bake - Covered", "duration": 2400, "frequency": "ONCE" }, { "name": "Bake - Uncovered", "duration": 1200, "frequency": "ONCE" } ]
- * }
- */
+@Entity(
+    tableName = "proof_sequence"
+)
 data class ProofSequenceEntity(
-    val id: Uuid,
+    @PrimaryKey val id: Uuid,
     val name: String,
-    val imageResourceUrl: String? = null
+    val imageResourceUrl: String?
 ) {
     companion object {
-        val loafSequence = ProofSequenceEntity(id = Uuid.random(), name = "Sourdough Loaf")
+        val loafSequence = ProofSequenceEntity(
+            id = Uuid.random(),
+            name = "Sourdough Loaf",
+            imageResourceUrl = null
+        )
         val feedingSequence =
             ProofSequenceEntity(
                 id = Uuid.random(),
                 name = "Sourdough - Feeding",
+                imageResourceUrl = null
             )
-        val testSequence = ProofSequenceEntity(id = Uuid.random(), name = "Test Sequence")
+        val testSequence = ProofSequenceEntity(
+            id = Uuid.random(),
+            name = "Test Sequence",
+            imageResourceUrl = null
+        )
 
         val allSequences = listOf(loafSequence, feedingSequence, testSequence)
     }
 }
+
+data class ProofSequenceWithSteps(
+    @Embedded val proofSequence: ProofSequenceEntity,
+    @Relation(
+        parentColumn = "id",
+        entityColumn = "sequenceId"
+    )
+    val proofSteps: List<ProofStepEntity>
+)

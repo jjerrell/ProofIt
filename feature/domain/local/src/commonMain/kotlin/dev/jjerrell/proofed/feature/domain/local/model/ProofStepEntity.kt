@@ -1,5 +1,9 @@
 package dev.jjerrell.proofed.feature.domain.local.model
 
+import androidx.room.Entity
+import androidx.room.ForeignKey
+import androidx.room.Index
+import androidx.room.PrimaryKey
 import kotlin.time.Duration
 import kotlin.time.Duration.Companion.days
 import kotlin.time.Duration.Companion.hours
@@ -7,13 +11,25 @@ import kotlin.time.Duration.Companion.minutes
 import kotlin.time.Duration.Companion.seconds
 import kotlin.uuid.Uuid
 
+@Entity(
+    tableName = "proof_step",
+    indices = [Index("sequenceId")],
+    foreignKeys = [
+        ForeignKey(
+            entity = ProofSequenceEntity::class,
+            parentColumns = ["id"],
+            childColumns = ["sequenceId"],
+            onDelete = ForeignKey.CASCADE
+        )
+    ]
+)
 data class ProofStepEntity(
-    val id: Uuid,
+    @PrimaryKey val id: Uuid,
     val sequenceId: Uuid,
     val name: String,
     val duration: Duration,
     val frequency: String,
-    val isAlarmOnly: Boolean = false
+    val isAlarmOnly: Boolean
 ) {
     companion object {
         val loafSteps =
@@ -23,35 +39,40 @@ data class ProofStepEntity(
                     sequenceId = ProofSequenceEntity.loafSequence.id,
                     name = "Autolyse",
                     duration = 1.hours,
-                    frequency = "ONCE"
+                    frequency = "ONCE",
+                    isAlarmOnly = false
                 ),
                 ProofStepEntity(
                     id = Uuid.random(),
                     sequenceId = ProofSequenceEntity.loafSequence.id,
                     name = "Stretch and Fold",
                     duration = 30.minutes,
-                    frequency = "UNTIL_CANCEL"
+                    frequency = "UNTIL_CANCEL",
+                    isAlarmOnly = false
                 ),
                 ProofStepEntity(
                     id = Uuid.random(),
                     sequenceId = ProofSequenceEntity.loafSequence.id,
                     name = "Bulk Ferment",
                     duration = 12.hours,
-                    frequency = "ONCE"
+                    frequency = "ONCE",
+                    isAlarmOnly = false
                 ),
                 ProofStepEntity(
                     id = Uuid.random(),
                     sequenceId = ProofSequenceEntity.loafSequence.id,
                     name = "Bake - Covered",
                     duration = 40.minutes,
-                    frequency = "ONCE"
+                    frequency = "ONCE",
+                    isAlarmOnly = false
                 ),
                 ProofStepEntity(
                     id = Uuid.random(),
                     sequenceId = ProofSequenceEntity.loafSequence.id,
                     name = "Bake - Uncovered",
                     duration = 20.minutes,
-                    frequency = "ONCE"
+                    frequency = "ONCE",
+                    isAlarmOnly = false
                 )
             )
 
