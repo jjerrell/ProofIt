@@ -20,14 +20,11 @@ class ProofSequenceMenuViewModel(val useCases: ProofSequenceUseCases) : ViewMode
                     useCases.getAllSequences()
                 }
                 .onSuccess {
-                    state =
-                        if (it.isEmpty()) {
-                            State.Error(Exception("No sequences found"))
-                        } else {
-                            State.Success(sequences = it)
-                        }
+                    state = State.Success(sequences = it)
                 }
-                .onFailure { state = State.Error(error = it) }
+                .onFailure {
+                    state = State.Error(error = it)
+                }
         }
     }
 

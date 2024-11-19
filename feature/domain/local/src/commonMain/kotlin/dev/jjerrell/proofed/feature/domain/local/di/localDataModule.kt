@@ -15,6 +15,6 @@ val localDataModule = module {
     single { InMemoryProofSequenceService() }
     single { InMemoryProofStepService() }
     single<LocalRepository> {
-        LocalRepository(localProofService = get(), localProofStepService = get())
+        LocalRepository(dbService = get())
     } binds arrayOf(IProofSequenceService::class, IProofStepService::class)
 }

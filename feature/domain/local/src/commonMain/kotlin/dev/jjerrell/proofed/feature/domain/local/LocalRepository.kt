@@ -5,119 +5,130 @@ import dev.jjerrell.proofed.feature.domain.api.model.ProofSequence
 import dev.jjerrell.proofed.feature.domain.api.model.ProofStep
 import dev.jjerrell.proofed.feature.domain.api.service.IProofSequenceService
 import dev.jjerrell.proofed.feature.domain.api.service.IProofStepService
+import dev.jjerrell.proofed.feature.domain.local.db.ProofingDatabase
 import dev.jjerrell.proofed.feature.domain.local.model.ProofSequenceEntity
+import dev.jjerrell.proofed.feature.domain.local.model.ProofSequenceWithSteps
 import dev.jjerrell.proofed.feature.domain.local.model.ProofStepEntity
-import dev.jjerrell.proofed.feature.domain.local.service.InMemoryProofSequenceService
-import dev.jjerrell.proofed.feature.domain.local.service.InMemoryProofStepService
 import kotlin.uuid.Uuid
 
-class LocalRepository
-internal constructor(
-    private val localProofService: InMemoryProofSequenceService,
-    private val localProofStepService: InMemoryProofStepService
+class LocalRepository internal constructor(
+    private val dbService: ProofingDatabase
 ) : IProofSequenceService, IProofStepService {
     // region IProofSequenceService
     override suspend fun getAllSequences(): List<ProofSequence> {
-        return localProofService.getAllSequences().map {
-            ProofSequence(
-                id = it.id,
-                name = it.name,
-                steps = getAllSequenceSteps(it.id),
-                imageResourceUrl = it.imageResourceUrl
-            )
-        }
+        return dbService.getProofingDao()
+            .getProofSequencesWithSteps()
+//            .ifEmpty { ProofSequenceWithSteps.allSequencesWithSteps }
+            .map { it.convertSequenceWithSteps() }
     }
 
     override suspend fun getSequence(sequenceId: Uuid): ProofSequence? {
-        return localProofService.getSequence(sequenceId)?.let {
-            ProofSequence(
-                id = it.id,
-                name = it.name,
-                steps = getAllSequenceSteps(it.id),
-                imageResourceUrl = it.imageResourceUrl
-            )
-        }
+        return dbService.getProofingDao()
+            .getProofSequenceWithSteps(sequenceId)
+            ?.convertSequenceWithSteps()
     }
 
     override suspend fun addSequence(sequence: ProofSequence) {
-        localProofService.addSequence(
-            sequence =
-                sequence.let {
-                    ProofSequenceEntity(
+        dbService.getProofingDao()
+            .insertProofSequenceWithSteps(
+                proofSequence = ProofSequenceEntity(
+                    id = sequence.id,
+                    name = sequence.name,
+                    imageResourceUrl = sequence.imageResourceUrl
+                ),
+                steps = sequence.steps.map {
+                    ProofStepEntity(
                         id = it.id,
+                        sequenceId = sequence.id,
                         name = it.name,
-                        imageResourceUrl = it.imageResourceUrl
+                        duration = it.duration,
+                        frequency = it.frequency.name,
+                        isAlarmOnly = it.isAlarmOnly
                     )
                 }
-        )
+            )
     }
 
     override suspend fun removeSequence(sequenceId: Uuid) {
-        localProofService.removeSequence(sequenceId)
+        dbService.getProofingDao().deleteProofSequence(sequenceId)
     }
 
     override suspend fun updateSequence(sequence: ProofSequence) {
-        localProofService.updateSequence(
-            sequence =
-                sequence.let {
-                    ProofSequenceEntity(
-                        id = it.id,
-                        name = it.name,
-                        imageResourceUrl = it.imageResourceUrl
-                    )
-                }
+        dbService.getProofingDao().updateProofSequenceWithSteps(
+            proofSequence = ProofSequenceEntity(
+                id = sequence.id,
+                name = sequence.name,
+                imageResourceUrl = sequence.imageResourceUrl
+            ),
+            steps = sequence.steps.map {
+                ProofStepEntity(
+                    id = it.id,
+                    sequenceId = sequence.id,
+                    name = it.name,
+                    duration = it.duration,
+                    frequency = it.frequency.name,
+                    isAlarmOnly = it.isAlarmOnly
+                )
+            }
         )
     }
     // endregion
     // region IProofStepService
     override suspend fun getAllSequenceSteps(sequenceId: Uuid): List<ProofStep> {
-        return localProofStepService.getAllSequenceSteps(sequenceId).map {
-            ProofStep(
-                id = it.id,
-                name = it.name,
-                duration = it.duration,
-                frequency = Frequency.valueOf(it.frequency),
-                isAlarmOnly = it.isAlarmOnly
-            )
+        return dbService.getProofingDao().getProofSteps(sequenceId).map {
+            it.convertStepEntity()
         }
     }
 
     override suspend fun addSequenceStep(sequenceId: Uuid, step: ProofStep) {
-        localProofStepService.addSequenceStep(
-            sequenceId = sequenceId,
-            step =
-                step.let {
-                    ProofStepEntity(
-                        id = it.id,
-                        sequenceId = sequenceId,
-                        name = it.name,
-                        duration = it.duration,
-                        frequency = it.frequency.name,
-                        isAlarmOnly = it.isAlarmOnly
-                    )
-                }
+        dbService.getProofingDao().insertProofStep(
+            ProofStepEntity(
+                id = step.id,
+                sequenceId = sequenceId,
+                name = step.name,
+                duration = step.duration,
+                frequency = step.frequency.name,
+                isAlarmOnly = step.isAlarmOnly
+            )
         )
     }
 
     override suspend fun removeSequenceStep(sequenceId: Uuid, stepId: Uuid) {
-        localProofStepService.removeSequenceStep(sequenceId, stepId)
+        dbService.getProofingDao().deleteProofStep(sequenceId, stepId)
     }
 
     override suspend fun updateSequenceStep(sequenceId: Uuid, step: ProofStep) {
-        localProofStepService.updateSequenceStep(
-            sequenceId = sequenceId,
-            step =
-                step.let {
-                    ProofStepEntity(
-                        id = it.id,
-                        sequenceId = sequenceId,
-                        name = it.name,
-                        duration = it.duration,
-                        frequency = it.frequency.name,
-                        isAlarmOnly = it.isAlarmOnly
-                    )
-                }
+        dbService.getProofingDao().updateProofStep(
+            ProofStepEntity(
+                id = step.id,
+                sequenceId = sequenceId,
+                name = step.name,
+                duration = step.duration,
+                frequency = step.frequency.name,
+                isAlarmOnly = step.isAlarmOnly
+            )
         )
     }
     // endregion
 }
+
+// region Converters
+private fun ProofSequenceWithSteps.convertSequenceWithSteps(): ProofSequence {
+    return ProofSequence(
+        id = proofSequence.id,
+        name = proofSequence.name,
+        steps = proofSteps.map { it.convertStepEntity() },
+        imageResourceUrl = proofSequence.imageResourceUrl
+    )
+}
+
+private fun ProofStepEntity.convertStepEntity(): ProofStep {
+    return ProofStep(
+        id = id,
+        name = name,
+        duration = duration,
+        frequency = Frequency.valueOf(frequency),
+        isAlarmOnly = isAlarmOnly
+    )
+}
+//endregion

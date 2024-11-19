@@ -48,32 +48,40 @@ fun ProofSequenceMenu(
                 }
                 is ProofSequenceMenuViewModel.State.Success -> {
                     val sequenceItems = capturedState.sequences
-                    items(sequenceItems, key = { it.id }) {
-                        MenuItem(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = { onSequenceClick(it) },
-                            icon = {
-                                it.imageResourceUrl?.let {
-                                    // TODO: Remote image loading
-                                }
-                            },
-                            content = {
-                                Row(
-                                    modifier = Modifier.fillMaxWidth(),
-                                    horizontalArrangement = Arrangement.SpaceBetween,
-                                    verticalAlignment = Alignment.CenterVertically
-                                ) {
-                                    Text(it.name)
-                                    Text(
-                                        pluralStringResource(
-                                            Res.plurals.sequence_count,
-                                            it.steps.size,
-                                            it.steps.size
+                    if (sequenceItems.isEmpty()) {
+                        item {
+                            Text(
+                                text = "No proofing sequences yet! Tap the '+' button to create your own or load a default sequence to start baking delicious bread."
+                            )
+                        }
+                    } else {
+                        items(sequenceItems, key = { it.id }) {
+                            MenuItem(
+                                modifier = Modifier.fillMaxWidth(),
+                                onClick = { onSequenceClick(it) },
+                                icon = {
+                                    it.imageResourceUrl?.let {
+                                        // TODO: Remote image loading
+                                    }
+                                },
+                                content = {
+                                    Row(
+                                        modifier = Modifier.fillMaxWidth(),
+                                        horizontalArrangement = Arrangement.SpaceBetween,
+                                        verticalAlignment = Alignment.CenterVertically
+                                    ) {
+                                        Text(it.name)
+                                        Text(
+                                            pluralStringResource(
+                                                Res.plurals.sequence_count,
+                                                it.steps.size,
+                                                it.steps.size
+                                            )
                                         )
-                                    )
+                                    }
                                 }
-                            }
-                        )
+                            )
+                        }
                     }
                 }
                 is ProofSequenceMenuViewModel.State.Error -> {

@@ -36,4 +36,22 @@ data class ProofSequenceWithSteps(
     @Embedded val proofSequence: ProofSequenceEntity,
     @Relation(parentColumn = "id", entityColumn = "sequenceId")
     val proofSteps: List<ProofStepEntity>
-)
+) {
+    companion object {
+        val allSequencesWithSteps =
+            listOf(
+                ProofSequenceWithSteps(
+                    proofSequence = ProofSequenceEntity.loafSequence,
+                    proofSteps = ProofStepEntity.loafSteps
+                ),
+                ProofSequenceWithSteps(
+                    proofSequence = ProofSequenceEntity.feedingSequence,
+                    proofSteps = ProofStepEntity.feedingSteps
+                ),
+                ProofSequenceWithSteps(
+                    proofSequence = ProofSequenceEntity.testSequence,
+                    proofSteps = ProofStepEntity.testSteps
+                )
+            )
+    }
+}
