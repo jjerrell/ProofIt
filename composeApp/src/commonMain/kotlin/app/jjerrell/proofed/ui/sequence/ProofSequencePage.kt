@@ -1,4 +1,4 @@
-package app.jjerrell.proofed.ui
+package app.jjerrell.proofed.ui.sequence
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.lazy.LazyColumn

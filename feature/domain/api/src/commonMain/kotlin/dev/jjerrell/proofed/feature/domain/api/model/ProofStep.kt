@@ -98,6 +98,14 @@ data class ProofStep(
                     isAlarmOnly = false
                 ),
             )
+
+        val EMPTY =
+            ProofStep(
+                id = Uuid.random(),
+                name = "",
+                duration = 0.seconds,
+                frequency = Frequency.ONCE
+            )
     }
 }
 

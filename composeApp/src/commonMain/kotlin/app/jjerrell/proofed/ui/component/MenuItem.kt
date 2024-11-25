@@ -13,14 +13,12 @@ import androidx.compose.ui.unit.dp
 @Composable
 fun MenuItem(
     modifier: Modifier = Modifier,
+    enabled: Boolean = true,
     onClick: () -> Unit,
     icon: @Composable () -> Unit,
     content: @Composable () -> Unit,
 ) {
-    Card(
-        modifier = modifier,
-        onClick = onClick,
-    ) {
+    Card(modifier = modifier, onClick = onClick, enabled = enabled) {
         Row(modifier = Modifier.fillMaxWidth().padding(4.dp)) {
             icon()
             content()

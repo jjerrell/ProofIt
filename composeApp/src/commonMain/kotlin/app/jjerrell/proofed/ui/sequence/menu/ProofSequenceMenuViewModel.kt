@@ -1,4 +1,4 @@
-package app.jjerrell.proofed.ui
+package app.jjerrell.proofed.ui.sequence.menu
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -16,22 +16,21 @@ class ProofSequenceMenuViewModel(val useCases: ProofSequenceUseCases) : ViewMode
     fun getAllSequences() {
         viewModelScope.launch {
             runCatching {
-                    state = State.Loading
+                    state = State.Loading(state?.sequences)
                     useCases.getAllSequences()
                 }
-                .onSuccess {
-                    state = State.Success(sequences = it)
-                }
-                .onFailure {
-                    state = State.Error(error = it)
-                }
+                .onSuccess { state = State.Success(sequences = it) }
+                .onFailure { state = State.Error(error = it) }
         }
     }
 
     sealed interface State {
-        data object Loading : State
+        val sequences: List<ProofSequence>?
+            get() = null
 
-        data class Success(val sequences: List<ProofSequence>) : State
+        data class Loading(override val sequences: List<ProofSequence>? = null) : State
+
+        data class Success(override val sequences: List<ProofSequence>) : State
 
         data class Error(val error: Throwable) : State
     }

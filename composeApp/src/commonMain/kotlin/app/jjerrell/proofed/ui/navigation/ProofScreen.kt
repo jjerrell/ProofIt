@@ -9,7 +9,8 @@ enum class ProofScreen(val title: StringResource = Res.string.app_name) {
     Start,
     Sequence {
         override val route: String = super.route + "/{sequenceId}"
-    };
+    },
+    CreateSequence;
 
     open val route: String
         get() = name

@@ -8,7 +8,7 @@ interface IProofSequenceService {
 
     suspend fun getSequence(sequenceId: Uuid): ProofSequence?
 
-    suspend fun addSequence(sequence: ProofSequence)
+    suspend fun addSequence(sequence: ProofSequence): Boolean
 
     suspend fun removeSequence(sequenceId: Uuid)
 

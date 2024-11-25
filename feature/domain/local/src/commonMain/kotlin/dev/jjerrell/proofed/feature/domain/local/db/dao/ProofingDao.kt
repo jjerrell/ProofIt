@@ -1,7 +1,6 @@
 package dev.jjerrell.proofed.feature.domain.local.db.dao
 
 import androidx.room.Dao
-import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import androidx.room.Transaction
@@ -13,21 +12,25 @@ import kotlin.uuid.Uuid
 
 @Dao
 interface ProofingDao {
-    @Insert suspend fun insertProofSequence(proofSequence: ProofSequenceEntity)
+    @Insert suspend fun insertProofSequence(proofSequence: ProofSequenceEntity): Long
+
     @Update suspend fun updateProofSequence(proofSequence: ProofSequenceEntity)
 
     @Query("SELECT * FROM proof_step WHERE sequenceId = :sequenceId")
     suspend fun getProofSteps(sequenceId: Uuid): List<ProofStepEntity>
-    @Insert suspend fun insertProofStep(proofStep: ProofStepEntity)
+
+    @Insert suspend fun insertProofStep(proofStep: ProofStepEntity): Long
+
     @Update suspend fun updateProofStep(proofStep: ProofStepEntity)
 
     @Transaction
     suspend fun insertProofSequenceWithSteps(
         proofSequence: ProofSequenceEntity,
         steps: List<ProofStepEntity>
-    ) {
-        insertProofSequence(proofSequence)
-        steps.forEach { step -> insertProofStep(step) }
+    ): Long {
+        return insertProofSequence(proofSequence).also {
+            steps.forEach { step -> insertProofStep(step) }
+        }
     }
 
     @Transaction
