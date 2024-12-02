@@ -14,14 +14,17 @@ import kotlin.uuid.Uuid
 interface ProofingDao {
     @Insert suspend fun insertProofSequence(proofSequence: ProofSequenceEntity): Long
 
-    @Update suspend fun updateProofSequence(proofSequence: ProofSequenceEntity)
+    @Update suspend fun updateProofSequence(proofSequence: ProofSequenceEntity): Int
 
     @Query("SELECT * FROM proof_step WHERE sequenceId = :sequenceId")
     suspend fun getProofSteps(sequenceId: Uuid): List<ProofStepEntity>
 
+    @Query("SELECT * FROM proof_step WHERE id = :id")
+    suspend fun getProofStep(id: Uuid): ProofStepEntity?
+
     @Insert suspend fun insertProofStep(proofStep: ProofStepEntity): Long
 
-    @Update suspend fun updateProofStep(proofStep: ProofStepEntity)
+    @Update suspend fun updateProofStep(proofStep: ProofStepEntity): Int
 
     @Transaction
     suspend fun insertProofSequenceWithSteps(
@@ -37,9 +40,10 @@ interface ProofingDao {
     suspend fun updateProofSequenceWithSteps(
         proofSequence: ProofSequenceEntity,
         steps: List<ProofStepEntity>
-    ) {
-        updateProofSequence(proofSequence)
-        steps.forEach { step -> updateProofStep(step) }
+    ): Int {
+        val sequenceResult = updateProofSequence(proofSequence) * 10
+        val stepsResult = steps.sumOf { updateProofStep(it) }
+        return sequenceResult + stepsResult
     }
 
     @Query("SELECT * FROM proof_sequence WHERE id = :sequenceId")

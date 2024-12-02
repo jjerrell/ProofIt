@@ -26,5 +26,8 @@ data class ProofSequence(
             ProofSequence(id = Uuid.random(), name = "Test Sequence", steps = ProofStep.testSteps)
 
         val allSequences = listOf(loafSequence, feedingSequence, testSequence)
+
+        val emptySequence
+            get() = ProofSequence(id = Uuid.random(), name = "", steps = emptyList())
     }
 }

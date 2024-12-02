@@ -9,7 +9,7 @@ import dev.jjerrell.proofed.feature.domain.api.model.ProofSequence
 import dev.jjerrell.proofed.feature.domain.glue.ProofSequenceUseCases
 import kotlinx.coroutines.launch
 
-class ProofSequenceMenuViewModel(val useCases: ProofSequenceUseCases) : ViewModel() {
+class ProofSequenceMenuPageViewModel(val useCases: ProofSequenceUseCases) : ViewModel() {
     var state: State? by mutableStateOf(null)
         private set
 

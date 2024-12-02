@@ -10,7 +10,12 @@ enum class ProofScreen(val title: StringResource = Res.string.app_name) {
     Sequence {
         override val route: String = super.route + "/{sequenceId}"
     },
-    CreateSequence;
+    CreateSequence,
+    EditStep {
+        override val route: String = super.route +
+                "/{sequenceId}" +
+                "?stepId={stepId}"
+    };
 
     open val route: String
         get() = name
@@ -21,5 +26,15 @@ enum class ProofScreen(val title: StringResource = Res.string.app_name) {
                 Sequence.name -> Sequence
                 else -> Start
             }
+
+        fun buildEditStepRoute(sequenceId: String, stepId: String?): String {
+            return buildString {
+                append(EditStep.name)
+                append("/$sequenceId")
+                if (stepId != null) {
+                    append("?stepId=$stepId")
+                }
+            }
+        }
     }
 }

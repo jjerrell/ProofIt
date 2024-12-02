@@ -18,7 +18,6 @@ class LocalRepository internal constructor(private val dbService: ProofingDataba
         return dbService
             .getProofingDao()
             .getProofSequencesWithSteps()
-            //            .ifEmpty { ProofSequenceWithSteps.allSequencesWithSteps }
             .map { it.convertSequenceWithSteps() }
     }
 
@@ -59,8 +58,8 @@ class LocalRepository internal constructor(private val dbService: ProofingDataba
         dbService.getProofingDao().deleteProofSequence(sequenceId)
     }
 
-    override suspend fun updateSequence(sequence: ProofSequence) {
-        dbService
+    override suspend fun updateSequence(sequence: ProofSequence): Boolean {
+        val result = dbService
             .getProofingDao()
             .updateProofSequenceWithSteps(
                 proofSequence =
@@ -81,15 +80,21 @@ class LocalRepository internal constructor(private val dbService: ProofingDataba
                         )
                     }
             )
+
+        return result > 10 // 10 is the minimum for a sequence with no steps
     }
     // endregion
     // region IProofStepService
+    override suspend fun getStep(stepId: Uuid): ProofStep? {
+        return dbService.getProofingDao().getProofStep(stepId)?.convertStepEntity()
+    }
+
     override suspend fun getAllSequenceSteps(sequenceId: Uuid): List<ProofStep> {
         return dbService.getProofingDao().getProofSteps(sequenceId).map { it.convertStepEntity() }
     }
 
-    override suspend fun addSequenceStep(sequenceId: Uuid, step: ProofStep) {
-        dbService
+    override suspend fun addSequenceStep(sequenceId: Uuid, step: ProofStep): Boolean {
+        val result = dbService
             .getProofingDao()
             .insertProofStep(
                 ProofStepEntity(
@@ -101,14 +106,15 @@ class LocalRepository internal constructor(private val dbService: ProofingDataba
                     isAlarmOnly = step.isAlarmOnly
                 )
             )
+        return result > -1L
     }
 
     override suspend fun removeSequenceStep(sequenceId: Uuid, stepId: Uuid) {
         dbService.getProofingDao().deleteProofStep(sequenceId, stepId)
     }
 
-    override suspend fun updateSequenceStep(sequenceId: Uuid, step: ProofStep) {
-        dbService
+    override suspend fun updateSequenceStep(sequenceId: Uuid, step: ProofStep): Boolean {
+        val result = dbService
             .getProofingDao()
             .updateProofStep(
                 ProofStepEntity(
@@ -120,6 +126,7 @@ class LocalRepository internal constructor(private val dbService: ProofingDataba
                     isAlarmOnly = step.isAlarmOnly
                 )
             )
+        return result > -1L
     }
     // endregion
 }

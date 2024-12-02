@@ -12,5 +12,5 @@ interface IProofSequenceService {
 
     suspend fun removeSequence(sequenceId: Uuid)
 
-    suspend fun updateSequence(sequence: ProofSequence)
+    suspend fun updateSequence(sequence: ProofSequence): Boolean
 }
