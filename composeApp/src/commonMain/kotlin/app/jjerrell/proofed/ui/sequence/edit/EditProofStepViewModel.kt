@@ -22,16 +22,40 @@ class EditProofStepViewModel(
         state.step?.name ?: ""
     }
 
+    val stepNameIsValid by derivedStateOf {
+        stepName.isNotBlank()
+    }
+
     val stepDuration by derivedStateOf {
         state.step?.duration ?: ""
+    }
+
+    val stepDurationIsValid by derivedStateOf {
+        when (val stepDurationLong = stepDuration.toLongOrNull()) {
+            null -> false
+            else -> stepDurationLong > 0L
+        }
     }
 
     val stepFrequency by derivedStateOf {
         (state.step?.frequency ?: Frequency.ONCE).toString()
     }
 
+    val stepFrequencyIsValid by derivedStateOf {
+        try {
+            Frequency.valueOf(stepFrequency)
+            true
+        } catch (e: IllegalArgumentException) {
+            false
+        }
+    }
+
     val isAlarmOnly by derivedStateOf {
         state.step?.isAlarmOnly ?: false
+    }
+
+    val stepIsValid by derivedStateOf {
+        stepNameIsValid && stepDurationIsValid && stepFrequencyIsValid
     }
 
     // region Setup
@@ -70,7 +94,7 @@ class EditProofStepViewModel(
 
     // region Updating
     fun validateAndSaveStep(): ProofStep? {
-        return if (isValidName() && isValidDuration() && isValidFrequency()) {
+        return if (stepNameIsValid && stepDurationIsValid && stepFrequencyIsValid) {
             state.step?.let {
                 ProofStep(
                     id = it.id,
@@ -87,39 +111,19 @@ class EditProofStepViewModel(
     fun validateAndSetName(name: String): Boolean {
         val currentStep = state.step ?: return false
         state = (state as? State.Success)?.copy(step = currentStep.copy(name = name)) ?: state
-        return isValidName()
+        return stepNameIsValid
     }
 
     fun validateAndSetDuration(duration: String): Boolean {
         val currentStep = state.step ?: return false
         state = (state as? State.Success)?.copy(step = currentStep.copy(duration = duration)) ?: state
-        return isValidDuration()
+        return stepDurationIsValid
     }
 
     fun validateAndSetFrequency(frequency: String): Boolean {
         val currentStep = state.step ?: return false
         state = (state as? State.Success)?.copy(step = currentStep.copy(frequency = frequency)) ?: state
-        return isValidFrequency()
-    }
-
-    fun isValidName(): Boolean {
-        return stepName.isNotBlank()
-    }
-
-    fun isValidDuration(): Boolean {
-        return when (val stepDurationLong = stepDuration.toLongOrNull()) {
-            null -> false
-            else -> stepDurationLong >= 0L
-        }
-    }
-
-    fun isValidFrequency(): Boolean {
-        return try {
-            Frequency.valueOf(stepFrequency)
-            true
-        } catch (e: IllegalArgumentException) {
-            false
-        }
+        return stepFrequencyIsValid
     }
     // endregion
 

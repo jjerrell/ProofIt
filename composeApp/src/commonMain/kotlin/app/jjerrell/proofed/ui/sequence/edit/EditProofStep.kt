@@ -39,24 +39,20 @@ fun EditProofStep(
                 Text(text = "Loading...")
             }
             is EditProofStepViewModel.State.Success -> {
-                val stepNameIsError = remember { mutableStateOf(!viewModel.isValidName()) }
-                val stepDurationIsError = remember { mutableStateOf(!viewModel.isValidDuration()) }
-                val stepFrequencyIsError = remember { mutableStateOf(!viewModel.isValidFrequency()) }
-
                 TextField(
                     value = viewModel.stepName,
                     onValueChange = {
-                        stepNameIsError.value = !viewModel.validateAndSetName(it)
+                        viewModel.validateAndSetName(it)
                     },
                     label = { Text(text = "Step Name") },
                     placeholder = { Text(text = "Step Name") },
                     trailingIcon = {
                         // Clear
-                        IconButton(onClick = { stepNameIsError.value = !viewModel.validateAndSetName("") }) {
+                        IconButton(onClick = { viewModel.validateAndSetName("") }) {
                             Icon(Icons.Outlined.Delete, contentDescription = "Clear")
                         }
                     },
-                    isError = stepNameIsError.value,
+                    isError = !viewModel.stepNameIsValid,
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Next),
                     singleLine = true,
                     modifier = Modifier.fillMaxWidth(),
@@ -64,38 +60,38 @@ fun EditProofStep(
                 TextField(
                     value = viewModel.stepDuration,
                     onValueChange = {
-                        stepDurationIsError.value = !viewModel.validateAndSetDuration(it)
+                        viewModel.validateAndSetDuration(it)
                     },
                     label = { Text(text = "Duration") },
                     placeholder = { Text(text = "1800 Seconds") },
                     trailingIcon = {
                         // Clear
                         IconButton(onClick = {
-                            stepDurationIsError.value = !viewModel.validateAndSetDuration("")
+                            viewModel.validateAndSetDuration("")
                         }) {
                             Icon(Icons.Outlined.Delete, contentDescription = "Clear")
                         }
                     },
-                    isError = stepDurationIsError.value,
+                    isError = !viewModel.stepDurationIsValid,
                     keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
                     modifier = Modifier.fillMaxWidth()
                 )
                 TextField(
                     value = viewModel.stepFrequency,
                     onValueChange = {
-                        stepFrequencyIsError.value = !viewModel.validateAndSetFrequency(it)
+                        viewModel.validateAndSetFrequency(it)
                     },
                     label = { Text(text = "Frequency") },
                     placeholder = { Text(text = "Once") },
                     trailingIcon = {
                         // Clear
                         IconButton(onClick = {
-                            stepFrequencyIsError.value = !viewModel.validateAndSetFrequency("")
+                            viewModel.validateAndSetFrequency("")
                         }) {
                             Icon(Icons.Outlined.Delete, contentDescription = "Clear")
                         }
                     },
-                    isError = stepFrequencyIsError.value,
+                    isError = !viewModel.stepFrequencyIsValid,
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
                     keyboardActions =
                     KeyboardActions(
@@ -108,7 +104,7 @@ fun EditProofStep(
                 Row {
                     TextButton(onClick = { onCancel() }) { Text(text = "Cancel") }
                     TextButton(
-                        enabled = !stepNameIsError.value && !stepDurationIsError.value && !stepFrequencyIsError.value,
+                        enabled = viewModel.stepIsValid,
                         onClick = {
                             onComplete(viewModel.validateAndSaveStep())
                         }

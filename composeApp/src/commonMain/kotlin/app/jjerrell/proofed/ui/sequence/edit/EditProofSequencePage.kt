@@ -42,29 +42,23 @@ fun EditProofSequencePage(
         viewModel.initializeState()
         onDispose { }
     }
-    // Setup the app bar
-    val appBarState = remember {
-        mutableStateOf(
-            AppBarState(
-                actionItems = listOf(
-                    AppBarState.ActionItem(
-                        isEnabled = true,
-                        description = "Save Sequence",
-                        icon = Icons.Default.Check,
-                        onClick = {
-                            viewModel.validateAndSaveSequence()
-                        }
-                    )
-                )
-            )
-        )
-    }
     Scaffold(
         modifier = modifier,
         topBar = {
             ProofAppBar(
                 currentScreen = ProofScreen.CreateSequence,
-                appBarState = appBarState.value,
+                appBarState = AppBarState(
+                    actionItems = listOf(
+                        AppBarState.ActionItem(
+                            isEnabled = viewModel.action == EditProofSequencePageViewModel.Action.None,
+                            description = "Save Sequence",
+                            icon = Icons.Default.Check,
+                            onClick = {
+                                viewModel.validateAndSaveSequence()
+                            }
+                        )
+                    )
+                ),
                 canNavigateBack = true,
                 navigateUp = onNavigateUp
             )
