@@ -50,11 +50,13 @@ fun EditProofSequencePage(
                 appBarState = AppBarState(
                     actionItems = listOf(
                         AppBarState.ActionItem(
-                            isEnabled = viewModel.action == EditProofSequencePageViewModel.Action.None,
+                            isEnabled = viewModel.sequenceIsValid,
                             description = "Save Sequence",
                             icon = Icons.Default.Check,
                             onClick = {
-                                viewModel.validateAndSaveSequence()
+                                viewModel.validateAndSaveSequence {
+                                    onNavigateUp()
+                                }
                             }
                         )
                     )
@@ -87,23 +89,22 @@ fun EditProofSequencePage(
                     Text(text = "Loading...")
                 }
                 is EditProofSequencePageViewModel.State.Success -> {
-                    val sequenceNameIsError = remember { mutableStateOf(!viewModel.isValidSequenceName()) }
                     TextField(
                         value = viewModel.sequenceName,
                         onValueChange = {
-                            sequenceNameIsError.value = !viewModel.validateAndSetSequenceName(it)
+                            viewModel.validateAndSetSequenceName(it)
                         },
                         label = { Text(text = "Sequence Name") },
                         placeholder = { Text(text = "Sequence Name") },
                         trailingIcon = {
                             // Clear
                             IconButton(onClick = {
-                                sequenceNameIsError.value = !viewModel.validateAndSetSequenceName("")
+                                viewModel.validateAndSetSequenceName("")
                             }) {
                                 Icon(Icons.Outlined.Delete, contentDescription = "Clear")
                             }
                         },
-                        isError = sequenceNameIsError.value,
+                        isError = !viewModel.sequenceNameIsValid,
                         modifier = Modifier.fillMaxWidth()
                     )
                     currentState.sequence.steps.forEach { currentStep ->

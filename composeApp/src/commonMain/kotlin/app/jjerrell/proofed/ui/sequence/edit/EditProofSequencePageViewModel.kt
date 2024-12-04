@@ -27,6 +27,16 @@ class EditProofSequencePageViewModel(
 
     val sequenceName by derivedStateOf { state.sequence?.name ?: "" }
 
+    val sequenceNameIsValid by derivedStateOf {
+        sequenceName.isNotBlank()
+    }
+
+    val sequenceIsValid by derivedStateOf {
+        action == Action.None
+                && sequenceNameIsValid
+                && state.sequence?.steps?.isNotEmpty() == true
+    }
+
     // region Setup
     fun initializeState() {
         state = State.Loading(state.sequence)
@@ -71,8 +81,10 @@ class EditProofSequencePageViewModel(
     // endregion
 
     // region Updating
-    fun validateAndSaveSequence() {
-        if (isValidSequenceName()) {
+    fun validateAndSaveSequence(
+        onCompletion: () -> Unit
+    ) {
+        if (sequenceIsValid) {
             viewModelScope.launch {
                 val updatedSequence = state.sequence?.let {
                     ProofSequence(
@@ -90,6 +102,7 @@ class EditProofSequencePageViewModel(
                 }.onSuccess {
                     sequenceId = updatedSequence.id
                     isNewSequence = false
+                    onCompletion()
                 }.onFailure {
                     state = State.Error(
                         sequence = state.sequence,
@@ -103,11 +116,7 @@ class EditProofSequencePageViewModel(
     fun validateAndSetSequenceName(name: String): Boolean {
         val currentSequence = state.sequence ?: return false
         state = (state as? State.Success)?.copy(sequence = currentSequence.copy(name = name)) ?: state
-        return isValidSequenceName()
-    }
-
-    fun isValidSequenceName(): Boolean {
-        return sequenceName.isNotBlank()
+        return sequenceNameIsValid
     }
     // endregion
 
