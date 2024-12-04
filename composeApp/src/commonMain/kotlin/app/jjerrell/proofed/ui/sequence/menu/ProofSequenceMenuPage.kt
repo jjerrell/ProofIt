@@ -45,7 +45,7 @@ fun ProofSequenceMenuPage(
     val lifecycle = LocalLifecycleOwner.current
     DisposableEffect(lifecycle) {
         viewModel.getAllSequences()
-        onDispose { }
+        onDispose {}
     }
     // Setup the app bar
     val appBarState = remember { mutableStateOf(AppBarState()) }
@@ -68,16 +68,15 @@ fun ProofSequenceMenuPage(
     ) { consumedPadding ->
         val isLoadingOrError =
             viewModel.state is ProofSequenceMenuPageViewModel.State.Loading ||
-                    viewModel.state is ProofSequenceMenuPageViewModel.State.Error
+                viewModel.state is ProofSequenceMenuPageViewModel.State.Error
         LazyColumn(
-            modifier = modifier
-                .padding(consumedPadding),
+            modifier = modifier.padding(consumedPadding),
             verticalArrangement =
-            if (isLoadingOrError) {
-                Arrangement.Center
-            } else {
-                Arrangement.Top
-            },
+                if (isLoadingOrError) {
+                    Arrangement.Center
+                } else {
+                    Arrangement.Top
+                },
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             when (val capturedState = viewModel.state) {
@@ -91,7 +90,7 @@ fun ProofSequenceMenuPage(
                         item {
                             Text(
                                 text =
-                                "No proofing sequences yet! Tap the '+' button to create your first and start baking delicious bread.",
+                                    "No proofing sequences yet! Tap the '+' button to create your first and start baking delicious bread.",
                                 textAlign = TextAlign.Center
                             )
                         }

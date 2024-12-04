@@ -9,8 +9,8 @@ import androidx.lifecycle.viewModelScope
 import dev.jjerrell.proofed.feature.domain.api.model.ProofSequence
 import dev.jjerrell.proofed.feature.domain.api.model.ProofStep
 import dev.jjerrell.proofed.feature.domain.glue.ProofSequenceUseCases
-import kotlinx.coroutines.launch
 import kotlin.uuid.Uuid
+import kotlinx.coroutines.launch
 
 class EditProofSequencePageViewModel(
     private var sequenceId: Uuid?,
@@ -27,14 +27,10 @@ class EditProofSequencePageViewModel(
 
     val sequenceName by derivedStateOf { state.sequence?.name ?: "" }
 
-    val sequenceNameIsValid by derivedStateOf {
-        sequenceName.isNotBlank()
-    }
+    val sequenceNameIsValid by derivedStateOf { sequenceName.isNotBlank() }
 
     val sequenceIsValid by derivedStateOf {
-        action == Action.None
-                && sequenceNameIsValid
-                && state.sequence?.steps?.isNotEmpty() == true
+        action == Action.None && sequenceNameIsValid && state.sequence?.steps?.isNotEmpty() == true
     }
 
     // region Setup
@@ -51,24 +47,20 @@ class EditProofSequencePageViewModel(
 
     private fun loadSequence(id: Uuid) {
         viewModelScope.launch {
-            runCatching {
-                useCases.getSequence(sequenceId = id)
-            }.onSuccess {
-                state = if (it == null) {
-                    State.Error(
-                        sequence = state.sequence,
-                        error = Throwable("Sequence not found")
-                    )
-                } else {
-                    isNewSequence = false
-                    State.Success(it)
+            runCatching { useCases.getSequence(sequenceId = id) }
+                .onSuccess {
+                    state =
+                        if (it == null) {
+                            State.Error(
+                                sequence = state.sequence,
+                                error = Throwable("Sequence not found")
+                            )
+                        } else {
+                            isNewSequence = false
+                            State.Success(it)
+                        }
                 }
-            }.onFailure {
-                state = State.Error(
-                    sequence = state.sequence,
-                    error = it
-                )
-            }
+                .onFailure { state = State.Error(sequence = state.sequence, error = it) }
         }
     }
 
@@ -81,41 +73,35 @@ class EditProofSequencePageViewModel(
     // endregion
 
     // region Updating
-    fun validateAndSaveSequence(
-        onCompletion: () -> Unit
-    ) {
+    fun validateAndSaveSequence(onCompletion: () -> Unit) {
         if (sequenceIsValid) {
             viewModelScope.launch {
-                val updatedSequence = state.sequence?.let {
-                    ProofSequence(
-                        id = it.id,
-                        name = it.name,
-                        steps = it.steps
-                    )
-                } ?: return@launch
-                runCatching {
-                    if (isNewSequence) {
-                        useCases.addSequence(updatedSequence)
-                    } else {
-                        useCases.updateSequence(updatedSequence)
+                val updatedSequence =
+                    state.sequence?.let {
+                        ProofSequence(id = it.id, name = it.name, steps = it.steps)
                     }
-                }.onSuccess {
-                    sequenceId = updatedSequence.id
-                    isNewSequence = false
-                    onCompletion()
-                }.onFailure {
-                    state = State.Error(
-                        sequence = state.sequence,
-                        error = it
-                    )
-                }
+                        ?: return@launch
+                runCatching {
+                        if (isNewSequence) {
+                            useCases.addSequence(updatedSequence)
+                        } else {
+                            useCases.updateSequence(updatedSequence)
+                        }
+                    }
+                    .onSuccess {
+                        sequenceId = updatedSequence.id
+                        isNewSequence = false
+                        onCompletion()
+                    }
+                    .onFailure { state = State.Error(sequence = state.sequence, error = it) }
             }
         }
     }
 
     fun validateAndSetSequenceName(name: String): Boolean {
         val currentSequence = state.sequence ?: return false
-        state = (state as? State.Success)?.copy(sequence = currentSequence.copy(name = name)) ?: state
+        state =
+            (state as? State.Success)?.copy(sequence = currentSequence.copy(name = name)) ?: state
         return sequenceNameIsValid
     }
     // endregion
@@ -132,24 +118,20 @@ class EditProofSequencePageViewModel(
     fun addStep(step: ProofStep?) {
         if (step == null) return
         val currentSequence = state.sequence ?: return
-        val existingStepIndex = currentSequence.steps
-            .indexOfFirst { it.id == step.id }
-            .takeUnless { it == -1 }
+        val existingStepIndex =
+            currentSequence.steps.indexOfFirst { it.id == step.id }.takeUnless { it == -1 }
 
-        state = (state as? State.Success)?.let {
-            if (existingStepIndex != null) {
-                val updatedSteps = currentSequence.steps.toMutableList()
-                updatedSteps[existingStepIndex] = step
-                it.copy(sequence = currentSequence.copy(steps = updatedSteps))
-            } else {
-                it.copy(
-                    sequence = currentSequence
-                        .copy(
-                            steps = currentSequence.steps + step
-                        )
-                )
+        state =
+            (state as? State.Success)?.let {
+                if (existingStepIndex != null) {
+                    val updatedSteps = currentSequence.steps.toMutableList()
+                    updatedSteps[existingStepIndex] = step
+                    it.copy(sequence = currentSequence.copy(steps = updatedSteps))
+                } else {
+                    it.copy(sequence = currentSequence.copy(steps = currentSequence.steps + step))
+                }
             }
-        } ?: state
+                ?: state
         action = Action.None
     }
 
@@ -158,23 +140,23 @@ class EditProofSequencePageViewModel(
     }
     // endregion
 
-
     sealed interface State {
         val sequence: ProofSequence?
             get() = null
 
         data class Loading(override val sequence: ProofSequence?) : State
-        data class Error(
-            override val sequence: ProofSequence? = null,
-            val error: Throwable
-        ) : State
+
+        data class Error(override val sequence: ProofSequence? = null, val error: Throwable) :
+            State
+
         data class Success(override val sequence: ProofSequence) : State
     }
 
     sealed interface Action {
         data object None : Action
+
         data object AddStep : Action
+
         data class EditStep(val step: ProofStep) : Action
     }
-
 }

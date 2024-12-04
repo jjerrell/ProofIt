@@ -15,10 +15,9 @@ class LocalRepository internal constructor(private val dbService: ProofingDataba
     IProofSequenceService, IProofStepService {
     // region IProofSequenceService
     override suspend fun getAllSequences(): List<ProofSequence> {
-        return dbService
-            .getProofingDao()
-            .getProofSequencesWithSteps()
-            .map { it.convertSequenceWithSteps() }
+        return dbService.getProofingDao().getProofSequencesWithSteps().map {
+            it.convertSequenceWithSteps()
+        }
     }
 
     override suspend fun getSequence(sequenceId: Uuid): ProofSequence? {
@@ -59,27 +58,28 @@ class LocalRepository internal constructor(private val dbService: ProofingDataba
     }
 
     override suspend fun updateSequence(sequence: ProofSequence): Boolean {
-        val result = dbService
-            .getProofingDao()
-            .updateProofSequenceWithSteps(
-                proofSequence =
-                    ProofSequenceEntity(
-                        id = sequence.id,
-                        name = sequence.name,
-                        imageResourceUrl = sequence.imageResourceUrl
-                    ),
-                steps =
-                    sequence.steps.map {
-                        ProofStepEntity(
-                            id = it.id,
-                            sequenceId = sequence.id,
-                            name = it.name,
-                            duration = it.duration,
-                            frequency = it.frequency.name,
-                            isAlarmOnly = it.isAlarmOnly
-                        )
-                    }
-            )
+        val result =
+            dbService
+                .getProofingDao()
+                .updateProofSequenceWithSteps(
+                    proofSequence =
+                        ProofSequenceEntity(
+                            id = sequence.id,
+                            name = sequence.name,
+                            imageResourceUrl = sequence.imageResourceUrl
+                        ),
+                    steps =
+                        sequence.steps.map {
+                            ProofStepEntity(
+                                id = it.id,
+                                sequenceId = sequence.id,
+                                name = it.name,
+                                duration = it.duration,
+                                frequency = it.frequency.name,
+                                isAlarmOnly = it.isAlarmOnly
+                            )
+                        }
+                )
 
         return result > 10 // 10 is the minimum for a sequence with no steps
     }
@@ -94,18 +94,19 @@ class LocalRepository internal constructor(private val dbService: ProofingDataba
     }
 
     override suspend fun addSequenceStep(sequenceId: Uuid, step: ProofStep): Boolean {
-        val result = dbService
-            .getProofingDao()
-            .insertProofStep(
-                ProofStepEntity(
-                    id = step.id,
-                    sequenceId = sequenceId,
-                    name = step.name,
-                    duration = step.duration,
-                    frequency = step.frequency.name,
-                    isAlarmOnly = step.isAlarmOnly
+        val result =
+            dbService
+                .getProofingDao()
+                .insertProofStep(
+                    ProofStepEntity(
+                        id = step.id,
+                        sequenceId = sequenceId,
+                        name = step.name,
+                        duration = step.duration,
+                        frequency = step.frequency.name,
+                        isAlarmOnly = step.isAlarmOnly
+                    )
                 )
-            )
         return result > -1L
     }
 
@@ -114,18 +115,19 @@ class LocalRepository internal constructor(private val dbService: ProofingDataba
     }
 
     override suspend fun updateSequenceStep(sequenceId: Uuid, step: ProofStep): Boolean {
-        val result = dbService
-            .getProofingDao()
-            .updateProofStep(
-                ProofStepEntity(
-                    id = step.id,
-                    sequenceId = sequenceId,
-                    name = step.name,
-                    duration = step.duration,
-                    frequency = step.frequency.name,
-                    isAlarmOnly = step.isAlarmOnly
+        val result =
+            dbService
+                .getProofingDao()
+                .updateProofStep(
+                    ProofStepEntity(
+                        id = step.id,
+                        sequenceId = sequenceId,
+                        name = step.name,
+                        duration = step.duration,
+                        frequency = step.frequency.name,
+                        isAlarmOnly = step.isAlarmOnly
+                    )
                 )
-            )
         return result > -1L
     }
     // endregion

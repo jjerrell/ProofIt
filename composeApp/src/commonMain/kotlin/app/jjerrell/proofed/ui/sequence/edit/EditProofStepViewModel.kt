@@ -18,17 +18,11 @@ class EditProofStepViewModel(
 
     private var isNewStep: Boolean = true
 
-    val stepName by derivedStateOf {
-        state.step?.name ?: ""
-    }
+    val stepName by derivedStateOf { state.step?.name ?: "" }
 
-    val stepNameIsValid by derivedStateOf {
-        stepName.isNotBlank()
-    }
+    val stepNameIsValid by derivedStateOf { stepName.isNotBlank() }
 
-    val stepDuration by derivedStateOf {
-        state.step?.duration ?: ""
-    }
+    val stepDuration by derivedStateOf { state.step?.duration ?: "" }
 
     val stepDurationIsValid by derivedStateOf {
         when (val stepDurationLong = stepDuration.toLongOrNull()) {
@@ -37,9 +31,7 @@ class EditProofStepViewModel(
         }
     }
 
-    val stepFrequency by derivedStateOf {
-        (state.step?.frequency ?: Frequency.ONCE).toString()
-    }
+    val stepFrequency by derivedStateOf { (state.step?.frequency ?: Frequency.ONCE).toString() }
 
     val stepFrequencyIsValid by derivedStateOf {
         try {
@@ -50,9 +42,7 @@ class EditProofStepViewModel(
         }
     }
 
-    val isAlarmOnly by derivedStateOf {
-        state.step?.isAlarmOnly ?: false
-    }
+    val isAlarmOnly by derivedStateOf { state.step?.isAlarmOnly ?: false }
 
     val stepIsValid by derivedStateOf {
         stepNameIsValid && stepDurationIsValid && stepFrequencyIsValid
@@ -69,21 +59,22 @@ class EditProofStepViewModel(
     }
 
     private fun loadStep() {
-        state = if (selectedStep == null) {
-            State.Error(Throwable("Step not found"))
-        } else {
-            State.Success(step =
-                MutableStep(
-                    id = selectedStep.id,
-                    name = selectedStep.name,
-                    duration = selectedStep.duration.inWholeSeconds.toString(),
-                    frequency = selectedStep.frequency.toString(),
-                    isAlarmOnly = selectedStep.isAlarmOnly
-                )
-            ).also {
-                isNewStep = false
+        state =
+            if (selectedStep == null) {
+                State.Error(Throwable("Step not found"))
+            } else {
+                State.Success(
+                        step =
+                            MutableStep(
+                                id = selectedStep.id,
+                                name = selectedStep.name,
+                                duration = selectedStep.duration.inWholeSeconds.toString(),
+                                frequency = selectedStep.frequency.toString(),
+                                isAlarmOnly = selectedStep.isAlarmOnly
+                            )
+                    )
+                    .also { isNewStep = false }
             }
-        }
     }
 
     private fun createNewStep() {
@@ -116,13 +107,15 @@ class EditProofStepViewModel(
 
     fun validateAndSetDuration(duration: String): Boolean {
         val currentStep = state.step ?: return false
-        state = (state as? State.Success)?.copy(step = currentStep.copy(duration = duration)) ?: state
+        state =
+            (state as? State.Success)?.copy(step = currentStep.copy(duration = duration)) ?: state
         return stepDurationIsValid
     }
 
     fun validateAndSetFrequency(frequency: String): Boolean {
         val currentStep = state.step ?: return false
-        state = (state as? State.Success)?.copy(step = currentStep.copy(frequency = frequency)) ?: state
+        state =
+            (state as? State.Success)?.copy(step = currentStep.copy(frequency = frequency)) ?: state
         return stepFrequencyIsValid
     }
     // endregion

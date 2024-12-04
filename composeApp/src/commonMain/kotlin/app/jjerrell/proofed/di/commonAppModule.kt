@@ -17,9 +17,5 @@ val commonAppModule = module {
     viewModel { parameters ->
         EditProofSequencePageViewModel(useCases = get(), sequenceId = parameters.getOrNull())
     }
-    viewModel { parameters ->
-        EditProofStepViewModel(
-            selectedStep = parameters.getOrNull()
-        )
-    }
+    viewModel { parameters -> EditProofStepViewModel(selectedStep = parameters.getOrNull()) }
 }

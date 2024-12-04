@@ -14,8 +14,6 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
@@ -28,12 +26,8 @@ fun EditProofStep(
     onCancel: () -> Unit,
     onComplete: (ProofStep?) -> Unit
 ) {
-    LaunchedEffect(Unit) {
-        viewModel.initializeState()
-    }
-    Column(
-        modifier = modifier
-    ) {
+    LaunchedEffect(Unit) { viewModel.initializeState() }
+    Column(modifier = modifier) {
         when (val state = viewModel.state) {
             is EditProofStepViewModel.State.Loading -> {
                 Text(text = "Loading...")
@@ -41,9 +35,7 @@ fun EditProofStep(
             is EditProofStepViewModel.State.Success -> {
                 TextField(
                     value = viewModel.stepName,
-                    onValueChange = {
-                        viewModel.validateAndSetName(it)
-                    },
+                    onValueChange = { viewModel.validateAndSetName(it) },
                     label = { Text(text = "Step Name") },
                     placeholder = { Text(text = "Step Name") },
                     trailingIcon = {
@@ -59,55 +51,44 @@ fun EditProofStep(
                 )
                 TextField(
                     value = viewModel.stepDuration,
-                    onValueChange = {
-                        viewModel.validateAndSetDuration(it)
-                    },
+                    onValueChange = { viewModel.validateAndSetDuration(it) },
                     label = { Text(text = "Duration") },
                     placeholder = { Text(text = "1800 Seconds") },
                     trailingIcon = {
                         // Clear
-                        IconButton(onClick = {
-                            viewModel.validateAndSetDuration("")
-                        }) {
+                        IconButton(onClick = { viewModel.validateAndSetDuration("") }) {
                             Icon(Icons.Outlined.Delete, contentDescription = "Clear")
                         }
                     },
                     isError = !viewModel.stepDurationIsValid,
-                    keyboardOptions = KeyboardOptions(keyboardType = KeyboardType.Decimal, imeAction = ImeAction.Next),
+                    keyboardOptions =
+                        KeyboardOptions(
+                            keyboardType = KeyboardType.Decimal,
+                            imeAction = ImeAction.Next
+                        ),
                     modifier = Modifier.fillMaxWidth()
                 )
                 TextField(
                     value = viewModel.stepFrequency,
-                    onValueChange = {
-                        viewModel.validateAndSetFrequency(it)
-                    },
+                    onValueChange = { viewModel.validateAndSetFrequency(it) },
                     label = { Text(text = "Frequency") },
                     placeholder = { Text(text = "Once") },
                     trailingIcon = {
                         // Clear
-                        IconButton(onClick = {
-                            viewModel.validateAndSetFrequency("")
-                        }) {
+                        IconButton(onClick = { viewModel.validateAndSetFrequency("") }) {
                             Icon(Icons.Outlined.Delete, contentDescription = "Clear")
                         }
                     },
                     isError = !viewModel.stepFrequencyIsValid,
                     keyboardOptions = KeyboardOptions.Default.copy(imeAction = ImeAction.Done),
-                    keyboardActions =
-                    KeyboardActions(
-                        onDone = {
-                            viewModel.validateAndSaveStep()
-                        }
-                    ),
+                    keyboardActions = KeyboardActions(onDone = { viewModel.validateAndSaveStep() }),
                     modifier = Modifier.fillMaxWidth()
                 )
                 Row {
                     TextButton(onClick = { onCancel() }) { Text(text = "Cancel") }
                     TextButton(
                         enabled = viewModel.stepIsValid,
-                        onClick = {
-                            onComplete(viewModel.validateAndSaveStep())
-                        }
+                        onClick = { onComplete(viewModel.validateAndSaveStep()) }
                     ) {
                         Text(text = "Save")
                     }

@@ -20,19 +20,10 @@ fun App(navController: NavHostController = rememberNavController()) {
     // Get the name of the current screen
     val currentScreen = ProofScreen.fromRoute(backStackEntry?.destination?.route)
 
-    KoinContext {
-        MaterialTheme {
-            ProofNavHost(
-                navController = navController
-            )
-        }
-    }
+    KoinContext { MaterialTheme { ProofNavHost(navController = navController) } }
 }
 
-data class AppBarState(
-    val title: String? = null,
-    val actionItems: List<ActionItem> = emptyList()
-) {
+data class AppBarState(val title: String? = null, val actionItems: List<ActionItem> = emptyList()) {
     data class ActionItem(
         val isEnabled: Boolean,
         val description: String,

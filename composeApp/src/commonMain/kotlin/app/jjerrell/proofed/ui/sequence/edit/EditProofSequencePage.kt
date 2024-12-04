@@ -20,8 +20,6 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.outlined.Delete
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import app.jjerrell.proofed.AppBarState
@@ -40,27 +38,27 @@ fun EditProofSequencePage(
     val lifecycle = LocalLifecycleOwner.current
     DisposableEffect(lifecycle) {
         viewModel.initializeState()
-        onDispose { }
+        onDispose {}
     }
     Scaffold(
         modifier = modifier,
         topBar = {
             ProofAppBar(
                 currentScreen = ProofScreen.CreateSequence,
-                appBarState = AppBarState(
-                    actionItems = listOf(
-                        AppBarState.ActionItem(
-                            isEnabled = viewModel.sequenceIsValid,
-                            description = "Save Sequence",
-                            icon = Icons.Default.Check,
-                            onClick = {
-                                viewModel.validateAndSaveSequence {
-                                    onNavigateUp()
-                                }
-                            }
-                        )
-                    )
-                ),
+                appBarState =
+                    AppBarState(
+                        actionItems =
+                            listOf(
+                                AppBarState.ActionItem(
+                                    isEnabled = viewModel.sequenceIsValid,
+                                    description = "Save Sequence",
+                                    icon = Icons.Default.Check,
+                                    onClick = {
+                                        viewModel.validateAndSaveSequence { onNavigateUp() }
+                                    }
+                                )
+                            )
+                    ),
                 canNavigateBack = true,
                 navigateUp = onNavigateUp
             )
@@ -79,10 +77,10 @@ fun EditProofSequencePage(
         floatingActionButtonPosition = FabPosition.End
     ) { consumedPadding ->
         Column(
-            modifier = Modifier
-                .padding(consumedPadding)
-                .fillMaxSize()
-                .verticalScroll(rememberScrollState())
+            modifier =
+                Modifier.padding(consumedPadding)
+                    .fillMaxSize()
+                    .verticalScroll(rememberScrollState())
         ) {
             when (val currentState = viewModel.state) {
                 is EditProofSequencePageViewModel.State.Loading -> {
@@ -91,16 +89,12 @@ fun EditProofSequencePage(
                 is EditProofSequencePageViewModel.State.Success -> {
                     TextField(
                         value = viewModel.sequenceName,
-                        onValueChange = {
-                            viewModel.validateAndSetSequenceName(it)
-                        },
+                        onValueChange = { viewModel.validateAndSetSequenceName(it) },
                         label = { Text(text = "Sequence Name") },
                         placeholder = { Text(text = "Sequence Name") },
                         trailingIcon = {
                             // Clear
-                            IconButton(onClick = {
-                                viewModel.validateAndSetSequenceName("")
-                            }) {
+                            IconButton(onClick = { viewModel.validateAndSetSequenceName("") }) {
                                 Icon(Icons.Outlined.Delete, contentDescription = "Clear")
                             }
                         },
@@ -114,16 +108,17 @@ fun EditProofSequencePage(
                             icon = {},
                             content = { Text(currentStep.name) }
                         )
-                        val parameter = when (val currentAction = viewModel.action) {
-                            is EditProofSequencePageViewModel.Action.EditStep -> currentAction.step
-                            else -> null
-                        }
+                        val parameter =
+                            when (val currentAction = viewModel.action) {
+                                is EditProofSequencePageViewModel.Action.EditStep ->
+                                    currentAction.step
+                                else -> null
+                            }
                         val key = viewModel.action.hashCode() + (parameter?.hashCode() ?: 0)
-                        AnimatedVisibility(
-                            visible = parameter?.id == currentStep.id
-                        ) {
+                        AnimatedVisibility(visible = parameter?.id == currentStep.id) {
                             EditProofStep(
-                                viewModel = koinViewModel(key = key.toString()) { parametersOf(parameter) },
+                                viewModel =
+                                    koinViewModel(key = key.toString()) { parametersOf(parameter) },
                                 onCancel = { viewModel.cancelAction() },
                                 onComplete = { viewModel.addStep(it) }
                             )
@@ -145,7 +140,5 @@ fun EditProofSequencePage(
                 )
             }
         }
-
     }
 }
-

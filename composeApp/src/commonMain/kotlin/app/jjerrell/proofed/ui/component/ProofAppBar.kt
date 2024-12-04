@@ -42,14 +42,10 @@ fun ProofAppBar(
         },
         actions = {
             appBarState.actionItems.forEach { actionItem ->
-                IconButton(
-                    onClick = actionItem.onClick,
-                    enabled = actionItem.isEnabled
-                ) {
+                IconButton(onClick = actionItem.onClick, enabled = actionItem.isEnabled) {
                     Icon(imageVector = actionItem.icon, contentDescription = actionItem.description)
                 }
             }
         }
     )
 }
-
