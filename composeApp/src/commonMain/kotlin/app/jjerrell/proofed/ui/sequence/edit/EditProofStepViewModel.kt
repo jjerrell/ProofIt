@@ -31,16 +31,9 @@ class EditProofStepViewModel(
         }
     }
 
-    val stepFrequency by derivedStateOf { (state.step?.frequency ?: Frequency.ONCE).toString() }
+    val stepFrequency by derivedStateOf { (state.step?.frequency) }
 
-    val stepFrequencyIsValid by derivedStateOf {
-        try {
-            Frequency.valueOf(stepFrequency)
-            true
-        } catch (e: IllegalArgumentException) {
-            false
-        }
-    }
+    val stepFrequencyIsValid by derivedStateOf { stepFrequency != null }
 
     val isAlarmOnly by derivedStateOf { state.step?.isAlarmOnly ?: false }
 
@@ -69,7 +62,7 @@ class EditProofStepViewModel(
                                 id = selectedStep.id,
                                 name = selectedStep.name,
                                 duration = selectedStep.duration.inWholeSeconds.toString(),
-                                frequency = selectedStep.frequency.toString(),
+                                frequency = selectedStep.frequency,
                                 isAlarmOnly = selectedStep.isAlarmOnly
                             )
                     )
@@ -91,7 +84,7 @@ class EditProofStepViewModel(
                     id = it.id,
                     name = it.name,
                     duration = it.duration.toLong().seconds,
-                    frequency = Frequency.valueOf(it.frequency),
+                    frequency = it.frequency ?: Frequency.ONCE,
                 )
             }
         } else {
@@ -112,7 +105,7 @@ class EditProofStepViewModel(
         return stepDurationIsValid
     }
 
-    fun validateAndSetFrequency(frequency: String): Boolean {
+    fun validateAndSetFrequency(frequency: Frequency?): Boolean {
         val currentStep = state.step ?: return false
         state =
             (state as? State.Success)?.copy(step = currentStep.copy(frequency = frequency)) ?: state
@@ -135,7 +128,7 @@ class EditProofStepViewModel(
         val id: Uuid = Uuid.random(),
         val name: String = "",
         val duration: String = "",
-        val frequency: String = "",
+        val frequency: Frequency? = null,
         val isAlarmOnly: Boolean = false
     )
 }

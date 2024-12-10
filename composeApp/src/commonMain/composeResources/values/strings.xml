@@ -21,6 +21,6 @@
 
     <string-array name="frequency_options">
         <item>Once</item>
-        <item>Until Cancel</item>
+        <item>Repeated</item>
     </string-array>
 </resources>

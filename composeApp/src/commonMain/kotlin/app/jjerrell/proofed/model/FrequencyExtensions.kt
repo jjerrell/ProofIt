@@ -7,6 +7,4 @@ import proofit.composeapp.generated.resources.Res
 import proofit.composeapp.generated.resources.frequency_options
 
 val Frequency.titleResource: String
-    @Composable
-    get() = stringArrayResource(Res.array.frequency_options)
-        .getOrNull(ordinal) ?: name
+    @Composable get() = stringArrayResource(Res.array.frequency_options).getOrNull(ordinal) ?: name
